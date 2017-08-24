@@ -8,8 +8,8 @@ package ru.job4j;
  */
 
 /**
-* Вывод строки в консоль
-*/
+ * Вывод строки в консоль
+ */
 
 public class Calculate {
   public static void main (String[] args) {
@@ -17,12 +17,12 @@ public class Calculate {
   }
 
 
-/**
-* Method echo.
-* @param name Your name.
-* @return Echo plus your name.
-*/
+  /**
+   * Method echo.
+   * @param name Your name.
+   * @return Echo plus your name.
+   */
   public String echo(String name) {
     return "Echo, echo, echo : " + name;
-  } 
+  }
 }
