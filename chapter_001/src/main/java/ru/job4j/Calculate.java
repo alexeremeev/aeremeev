@@ -7,12 +7,12 @@ package ru.job4j;
  * @version 1
  */
 
-/**
- * Вывод строки в консоль
- */
-
 public class Calculate {
-  public static void main (String[] args) {
+  /**.
+   * Вывод строки в консоль
+   * @param args аргументы
+   */
+  public static void main(String[] args) {
     System.out.println("Hello World!");
   }
 
