@@ -2,7 +2,7 @@ package ru.job4j.condition;
 /**
  * Class Triangle c проверкой существования и вычисления площади треугольника.
  * @author aeremeev
- * @since 27.08.2017
+ * @since 27.08.2017.
  * @version 1
  */
 public class Triangle {

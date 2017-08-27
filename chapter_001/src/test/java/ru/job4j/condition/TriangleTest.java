@@ -9,7 +9,7 @@ import static org.junit.Assert.assertThat;
  *
  * @author Alexander Eremeev (mailto:eremeev@gmail.com)
  * @version $Id$
- * @since 27.08.2017
+ * @since 27.08.2017.
  */
 
 public class TriangleTest {
