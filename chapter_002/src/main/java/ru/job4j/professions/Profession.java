@@ -4,6 +4,7 @@ package ru.job4j.professions;
  * Материнский класс профессия.
  */
 public class Profession {
+    //CHECKSTYLE.OFF
     /**
      * Имя, специальность.
      */
@@ -12,6 +13,7 @@ public class Profession {
      * Возраст.
      */
     public int age;
+    //CHECKSTYLE.ON
 
     /**
      * Геттер имени.
