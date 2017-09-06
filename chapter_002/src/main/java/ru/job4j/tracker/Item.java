@@ -72,4 +72,9 @@ public class Item {
     public void setId(String id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Name: " + this.name + " | Description: " + this.description + " | ID: " + this.id;
+    }
 }
