@@ -9,6 +9,10 @@ public class StartUi {
      */
     private Input input;
     /**
+     * Трекер, как аргумент.
+     */
+    private Tracker tracker;
+    /**
      * Константы выбора меню.
      */
     //CHECKSTYLE.OFF
@@ -37,12 +41,12 @@ public class StartUi {
             .append("5. Find items by name").append(line)
             .append("6. Exit Program").append(line).toString();
 
-    public StartUi(Input input) {
+    public StartUi(Input input, Tracker tracker) {
         this.input = input;
+        this.tracker= tracker;
     }
 
     public void init() {
-        Tracker tracker = new Tracker();
         while (true) {
             System.out.println(SHOWMENU);
             String choice = input.ask("Select:");
@@ -85,6 +89,7 @@ public class StartUi {
 
     public static void main(String[] args) {
         Input input = new ConsoleInput();
-        new StartUi(input).init();
+        Tracker tracker = new Tracker();
+        new StartUi(input, tracker).init();
     }
 }
