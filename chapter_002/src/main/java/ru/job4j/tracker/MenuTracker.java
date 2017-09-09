@@ -52,7 +52,7 @@ public class MenuTracker {
     /**
      * Массив пунктов меню.
      */
-    private UserAction[] actions = new UserAction[6];
+    private UserAction[] actions = new UserAction[7];
 
     /**
      * Конструктор MenuTracker.
@@ -65,6 +65,14 @@ public class MenuTracker {
     }
 
     /**
+     * Запрос массива действий, доспутных пользователю.
+     * @return массив действий, доспутных пользователю.
+     */
+    public UserAction[] getAction() {
+        return this.actions;
+    }
+
+    /**
      * Заполнение массива пунктов меню.
      */
     public void fillActions() {
@@ -74,6 +82,7 @@ public class MenuTracker {
         this.actions[3] = this.new DeleteItem();
         this.actions[4] = this.new FindById();
         this.actions[5] = this.new FindByName();
+        this.actions[6] = this.new Exit();
     }
 
     /**
@@ -243,6 +252,33 @@ public class MenuTracker {
          */
         public String info() {
             return String.format("%s. %s", this.key(), "Find items by name");
+        }
+    }
+
+    /**
+     * Выход из меню.
+     */
+    private class Exit implements UserAction {
+        /**
+         * Реализация метода key интерфейса UserAction.
+         * @return номер пункта меню.
+         */
+        public int key() {
+            return 6;
+        }
+        /**
+         * Реализация метода execute интерфейса UserAction.
+         * @param input интерфейс ввода.
+         * @param tracker трекер.
+         */
+        public void execute(Input input, Tracker tracker) {
+        }
+        /**
+         * Реализация метода info интерфейса UserAction.
+         * @return описание пункта меню.
+         */
+        public String info() {
+            return String.format("%s. %s", this.key(), "Exit program");
         }
     }
 }

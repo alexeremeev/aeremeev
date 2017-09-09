@@ -35,10 +35,13 @@ public class StartUi {
     public void init() {
         MenuTracker menu = new MenuTracker(this.input, this.tracker);
         menu.fillActions();
+        int[] ranges = new int[menu.getAction().length];
+        for (int index = 0; index != menu.getAction().length; index++) {
+            ranges[index] = menu.getAction()[index].key();
+        }
         while (true) {
             menu.show();
-            System.out.println("6. Exit Program");
-            int key = Integer.valueOf(input.ask("Select: "));
+            int key = input.ask("Select: ", ranges);
             if (EXIT == key) {
                 System.out.println("Goodbye!");
                 break;
@@ -52,7 +55,7 @@ public class StartUi {
      * @param args аргументы.
      */
     public static void main(String[] args) {
-        Input input = new ConsoleInput();
+        Input input = new ValidateInput();
         Tracker tracker = new Tracker();
         new StartUi(input, tracker).init();
     }
