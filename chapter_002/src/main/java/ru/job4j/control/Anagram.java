@@ -5,6 +5,9 @@ package ru.job4j.control;
  * Во втором цикле мы отнимает по одной соответствующие буквы из массива и проверяем, чтобы итог не выходил за 0.
  */
 public class Anagram {
+    //CHECKSTYLE.OFF
+    private final static int ALPHABET = 1104;
+    //CHECKSTYLE.ON
     /**
      * Метод сравнивает две строки на анаграмму.
      * @param original первая строка.
@@ -15,7 +18,7 @@ public class Anagram {
         boolean confirm = false;
         if (original.length() == shuffle.length()) {
             confirm = true;
-            int[] chars = new int[1104];
+            int[] chars = new int[ALPHABET];
             for (char c : original.toCharArray()) {
                 chars[c]++;
             }
