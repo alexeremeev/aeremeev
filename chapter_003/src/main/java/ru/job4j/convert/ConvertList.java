@@ -43,4 +43,19 @@ public class ConvertList {
         return array;
     }
 
+    /**
+     * Конвертация списка массивов в список Interger.
+      * @param list входной список массивов.
+     * @return список Integer.
+     */
+    public List<Integer> convert(List<int[]> list) {
+        List<Integer> result = new ArrayList<>();
+        for (int[] array : list) {
+            for (int index = 0; index != array.length; index++) {
+                result.add(array[index]);
+            }
+        }
+        return result;
+    }
+
 }
