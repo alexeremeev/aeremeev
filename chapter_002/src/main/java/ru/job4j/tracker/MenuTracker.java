@@ -1,5 +1,7 @@
 package ru.job4j.tracker;
 
+import java.util.ArrayList;
+
 /**
  * class EditItem - внешний класс, редактирование заявки.
  */
@@ -44,7 +46,8 @@ public class MenuTracker {
     /**
      * Массив пунктов меню.
      */
-    private UserAction[] actions = new UserAction[7];
+    private ArrayList<UserAction> actions = new ArrayList<>();
+    //private UserAction[] actions = new UserAction[7];
     /**
      * Счетчик элементов массива actions.
      */
@@ -64,7 +67,7 @@ public class MenuTracker {
      * Запрос массива действий, доспутных пользователю.
      * @return массив действий, доспутных пользователю.
      */
-    public UserAction[] getAction() {
+    public ArrayList<UserAction> getAction() {
         return this.actions;
     }
 
@@ -72,13 +75,13 @@ public class MenuTracker {
      * Заполнение массива пунктов меню.
      */
     public void fillActions() {
-        this.actions[position++] = this.new AddItem(0, "Add the new item");
-        this.actions[position++] = new MenuTracker.ShowAllItems(1, "Show all items");
-        this.actions[position++] = new EditItem(2, "Edit Item");
-        this.actions[position++] = this.new DeleteItem(3, "Delete item");
-        this.actions[position++] = this.new FindById(4, "Find item by Id");
-        this.actions[position++] = this.new FindByName(5, "Find items by name");
-        this.actions[position++] = this.new Exit(6, "Exit program");
+        this.actions.add(position++, this.new AddItem(0, "Add the new item"));
+        this.actions.add(position++, new MenuTracker.ShowAllItems(1, "Show all items"));
+        this.actions.add(position++, new EditItem(2, "Edit Item"));
+        this.actions.add(position++, this.new DeleteItem(3, "Delete item"));
+        this.actions.add(position++, this.new FindById(4, "Find item by Id"));
+        this.actions.add(position++, this.new FindByName(5, "Find items by name"));
+        this.actions.add(position++, this.new Exit(6, "Exit program"));
     }
 
     /**
@@ -97,7 +100,7 @@ public class MenuTracker {
      * @param key номер пункта меню.
      */
     public void select(int key) {
-        this.actions[key].execute(this.input, this.tracker);
+        this.actions.get(key).execute(this.input, this.tracker);
     }
 
     /**
