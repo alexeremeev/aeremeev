@@ -24,6 +24,22 @@ public class User implements Comparable<User> {
     }
 
     /**
+     * Геттер имени.
+     * @return имя.
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Геттер возраста.
+     * @return возраст.
+     */
+    public Integer getAge() {
+        return this.age;
+    }
+
+    /**
      * Переопределенный compareTo.
      * @param o User.
      * @return User с меньшим возрастом.
@@ -44,4 +60,5 @@ public class User implements Comparable<User> {
                 + ", age="
                 + age + '}';
     }
+
 }

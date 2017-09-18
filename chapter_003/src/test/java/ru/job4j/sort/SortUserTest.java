@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
  */
 public class SortUserTest {
     /**
-     * Тест для трех пользователей.
+     * Тест для трех пользователей, переданных в TreeSet.
      */
     @Test
     public void trySortUsersByAgeInTreeSet() {
@@ -25,5 +25,29 @@ public class SortUserTest {
         assertThat(set.toString(),
                 is("[User{name='Oleg', age=25}, User{name='Petr', age=30}, User{name='Alex', age=31}]"));
 
+    }
+    /**
+     * Тест для четырех пользователей, сортировка по длине имени.
+     */
+    @Test
+    public void trySortUsersByNameLength() {
+        SortUser sortUser = new SortUser();
+        ArrayList<User> list = new ArrayList<>();
+        list.addAll(Arrays.asList(new User("Alexey", 31), new User("Petr", 30),
+                new User("Oleg", 25), new User("Alexey", 42)));
+        assertThat(sortUser.sortNameLength(list).toString(), is("[User{name='Petr', age=30}, User{name='Oleg',"
+                 + " age=25}, User{name='Alexey', age=31}, User{name='Alexey', age=42}]"));
+    }
+    /**
+     * Тест для четырех пользователей, сортировка по длине имени и возрасту.
+     */
+    @Test
+    public void trySortUsersByAllFields() {
+        SortUser sortUser = new SortUser();
+        ArrayList<User> list = new ArrayList<>();
+        list.addAll(Arrays.asList(new User("Alexey", 31), new User("Ivan", 30),
+                new User("Ivan", 25), new User("Alexey", 42)));
+        assertThat(sortUser.sortByAllFields(list).toString(), is("[User{name='Ivan', age=25}, User{name='Ivan',"
+                + " age=30}, User{name='Alexey', age=31}, User{name='Alexey', age=42}]"));
     }
 }
