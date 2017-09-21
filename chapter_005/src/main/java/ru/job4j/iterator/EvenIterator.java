@@ -1,6 +1,7 @@
 package ru.job4j.iterator;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * class EvenIterator - итератор для перебора четных чисел в массиве.
@@ -29,13 +30,7 @@ public class EvenIterator implements Iterator {
      */
     @Override
     public boolean hasNext() {
-        boolean exist = false;
-        for (int i = index; i != values.length; i++) {
-            if (values[i] % 2 == 0) {
-                exist = true;
-            }
-        }
-        return exist;
+        return pass() != -1;
     }
 
     /**
@@ -44,11 +39,24 @@ public class EvenIterator implements Iterator {
      */
     @Override
     public Object next() {
-        int result = 0;
+        if (pass() != -1) {
+            int result = values[pass()];
+            index = pass() + 1;
+            return result;
+        } else {
+            throw new NoSuchElementException("No more elements in this collection!");
+        }
+    }
+
+    /**
+     * Метод прохода по массиву с целью получения следующего четного числа.
+     * @return индекс следующего четного числа в массиве или -1, если такого нет.
+     */
+    private int pass() {
+        int result = -1;
         for (int i = index; i != values.length; i++) {
             if (values[i] % 2 == 0) {
-                result = values[i];
-                index = ++i;
+                result = i;
                 break;
             }
         }
