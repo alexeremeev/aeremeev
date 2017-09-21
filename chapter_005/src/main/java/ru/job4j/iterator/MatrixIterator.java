@@ -1,6 +1,7 @@
 package ru.job4j.iterator;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * class MatrixIterator - реализация итератора для двумерного массива, значения по порядку.
@@ -47,6 +48,9 @@ public class MatrixIterator implements Iterator {
         if (values[row].length <= column) {
             row++;
             column = 0;
+        }
+        if (row > values.length) {
+            throw new NoSuchElementException("No more elements in this collection!");
         }
         return result;
     }
