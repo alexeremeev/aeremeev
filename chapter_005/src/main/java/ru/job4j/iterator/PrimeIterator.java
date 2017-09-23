@@ -1,6 +1,7 @@
 package ru.job4j.iterator;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * class PrimeIterator - итератор для перебора простых чисел в массиве.
@@ -29,19 +30,7 @@ public class PrimeIterator implements Iterator {
      */
     @Override
     public boolean hasNext() {
-        boolean exist = false;
-        for (int i = index; i != values.length; i++) {
-            for (int j = 2; j != values[i]; j++) {
-                if (values[i] % j == 0) {
-                    break;
-                }
-                exist = true;
-            }
-            if (exist) {
-                break;
-            }
-        }
-        return exist;
+        return getIndexOfNextPrime() != -1;
     }
 
     /**
@@ -50,16 +39,30 @@ public class PrimeIterator implements Iterator {
      */
     @Override
     public Object next() {
-        int result = 0;
+        if (getIndexOfNextPrime() != -1) {
+            int result = values[getIndexOfNextPrime()];
+            index = getIndexOfNextPrime() + 1;
+            return result;
+        } else {
+            throw new NoSuchElementException("No more prime numbers in this collection!");
+        }
+
+    }
+
+    /**
+     * Метод получения индекса следующего простого числа в массиве.
+     * @return индекс следующего просто числа из массива или -1, если такого нет.
+     */
+    public int getIndexOfNextPrime() {
+        int result = -1;
         for (int i = index; i != values.length; i++) {
             for (int j = 2; j != values[i]; j++) {
                 if (values[i] % j == 0) {
-                    break;
+                        break;
                 }
-                result = values[i];
+                result = i;
             }
-            if (result == values[i]) {
-                index = ++i;
+            if (result != -1) {
                 break;
             }
         }
