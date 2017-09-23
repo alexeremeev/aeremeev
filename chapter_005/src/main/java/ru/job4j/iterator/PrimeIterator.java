@@ -53,7 +53,7 @@ public class PrimeIterator implements Iterator {
      * Метод получения индекса следующего простого числа в массиве.
      * @return индекс следующего просто числа из массива или -1, если такого нет.
      */
-    public int getIndexOfNextPrime() {
+    private int getIndexOfNextPrime() {
         int result = -1;
         for (int i = index; i != values.length; i++) {
             for (int j = 2; j != values[i]; j++) {
