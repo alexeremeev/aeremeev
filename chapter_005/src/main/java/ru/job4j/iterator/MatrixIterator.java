@@ -44,14 +44,16 @@ public class MatrixIterator implements Iterator {
      */
     @Override
     public Object next() {
-        int result = values[row][column++];
-        if (values[row].length <= column) {
-            row++;
-            column = 0;
+        if (hasNext()) {
+            int result = values[row][column++];
+            if (values[row].length <= column) {
+                row++;
+                column = 0;
+            }
+            return result;
         }
-        if (row > values.length) {
+        else {
             throw new NoSuchElementException("No more elements in this collection!");
         }
-        return result;
     }
 }
