@@ -51,8 +51,7 @@ public class MatrixIterator implements Iterator {
                 column = 0;
             }
             return result;
-        }
-        else {
+        } else {
             throw new NoSuchElementException("No more elements in this collection!");
         }
     }
