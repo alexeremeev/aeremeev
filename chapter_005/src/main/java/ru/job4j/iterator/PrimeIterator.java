@@ -56,14 +56,19 @@ public class PrimeIterator implements Iterator {
     private int getIndexOfNextPrime() {
         int result = -1;
         for (int i = index; i != values.length; i++) {
-            for (int j = 2; j != values[i]; j++) {
-                if (values[i] % j == 0) {
-                        break;
+            if (values[i] != 1) {
+                if (values[i] == 2) {
+                    return i;
                 }
-                result = i;
-            }
-            if (result != -1) {
-                break;
+                for (int j = 2; j != values[i]; j++) {
+                    if (values[i] % j == 0) {
+                        break;
+                    }
+                    result = i;
+                }
+                if (result != -1) {
+                    break;
+                }
             }
         }
         return result;
