@@ -1,5 +1,7 @@
 package ru.job4j.generic;
 
+import java.util.NoSuchElementException;
+
 /**
  * class SimpleArray - простая обертка над массивом, инициализация по размеру.
  * @param <E> дженерик.
@@ -27,7 +29,12 @@ public class SimpleArray<E> {
      * @param value добавляемы объект.
      */
     public void add(E value) {
-        this.objects[index++] = value;
+        if (index < this.objects.length) {
+            this.objects[index++] = value;
+        } else {
+            System.out.println("SimpleArray is full, please delete something.");
+        }
+
     }
 
     /**
@@ -40,12 +47,34 @@ public class SimpleArray<E> {
     }
 
     /**
+     * Получение индекса объекта в массиве.
+     * @param value объект.
+     * @return индекс объекта в массиве.
+     */
+    public int getIndexOfObject(E value) {
+        int pos = -1;
+        for (int i = 0; i != objects.length; i++) {
+            if (objects[i].equals(value)) {
+                pos = i;
+                break;
+            }
+        }
+        if (pos != -1) {
+            return pos;
+        } else {
+            throw new NoSuchElementException("No such element if SimpleArray");
+        }
+    }
+
+    /**
      * Удаление объекта из массива по индексу.
      * @param position индекс удаляемого.
      */
     public void remove(int position) {
-        System.arraycopy(objects, position + 1, objects, position, index - position - 1);
-        objects[--index] = null;
+        if (position < this.objects.length) {
+            System.arraycopy(objects, position + 1, objects, position, index - position - 1);
+            objects[--index] = null;
+        }
     }
 
     /**
@@ -54,6 +83,8 @@ public class SimpleArray<E> {
      * @param value объект, который необходимо записать в ячейку.
      */
     public void update(int position, E value) {
-        objects[position] = value;
+        if (position < this.objects.length) {
+            objects[position] = value;
+        }
     }
 }
