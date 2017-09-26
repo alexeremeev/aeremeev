@@ -1,55 +1,32 @@
 package ru.job4j.generic;
 
 /**
- * abstract class Store - хранилище, реализованное на основе SimpleArray<T>.
- * @param <T> дженерики, расширающие класс Base.
+ * Интерфейс хранилища Store.
+ * @param <T> дженерик.
  */
-public abstract class Store<T extends Base> {
-
+public interface Store<T extends Base> {
     /**
-     * Для хранения элементов используется SimpleArray<T>.
-     */
-    private SimpleArray<T> storeArray;
-
-    /**
-     * Конструктор.
-     * @param size размемр storeArray.
-     */
-    protected Store(int size) {
-        this.storeArray = new SimpleArray<>(size);
-    }
-
-    /**
-     * Добавление нового элемента в хранилище.
+     * Добавить элемент в хранилище.
      * @param value элемент.
      */
-    public void add(T value) {
-        storeArray.add(value);
-    }
+    void add(T value);
 
     /**
-     * Обновление данных элемента в хранлилище.
+     * Обновить элемент в хранилище.
      * @param value элемент.
      */
-    public void update(T value) {
-        storeArray.update(storeArray.getIndexOfObject(value), value);
-    }
+    void update(T value);
 
     /**
-     * Удаление элемента из хранилища.
+     * Удалить элемент из хранилища.
      * @param value элемент.
      */
-    public void remove(T value) {
-        storeArray.remove(storeArray.getIndexOfObject(value));
-    }
+    void remove(T value);
 
     /**
-     * Получение элемента по индексу в хранилище.
+     * Получить элемент по индексу из хранилища.
      * @param index индекс.
      * @return элемент.
      */
-    public T get(int index) {
-        return storeArray.get(index);
-    }
-
+    T get(int index);
 }
