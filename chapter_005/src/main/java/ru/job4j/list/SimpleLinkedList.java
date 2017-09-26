@@ -22,6 +22,21 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
     private Node<E> tail;
 
     /**
+     * Геттер элемента головной ноды.
+     * @return элемент головной ноды.
+     */
+    public E getHeadElement() {
+        return head.getElement();
+    }
+    /**
+     * Геттер элемента крайней ноды.
+     * @return элемент крайней ноды.
+     */
+    public E getTailElement() {
+        return tail.getElement();
+    }
+
+    /**
      * Нода, хранящая данные элемента списка.
      * @param <E> дженерик.
      */
@@ -91,6 +106,35 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
             }
         }
         return current.getElement();
+    }
+
+    /**
+     * Удаление ноды из списка по значению элемента.
+     * @param value элемент.
+     */
+    public void remove(E value) {
+        Node<E> previous = null;
+        Node<E> current = head;
+
+        while (current != null) {
+            if (current.getElement().equals(value)) {
+                if (previous != null) {
+                    previous.next = current.next;
+                    if (current.next == null) {
+                        tail = previous;
+                    }
+                } else {
+                    head = head.next;
+                    if (head == null) {
+                        tail = null;
+                    }
+                }
+                size--;
+                break;
+            }
+            previous = current;
+            current = current.next;
+        }
     }
 
     /**
