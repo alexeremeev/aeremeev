@@ -39,16 +39,68 @@ public class SimpleSet<E> implements Iterable<E> {
     }
 
     /**
+     * Добавление объекта в множество c двоичным поиском дубля.
+     * @param value объект.
+     * @return true если добавлен, false, если это дубль.
+     */
+    public boolean addBinary(E value) {
+        boolean result = false;
+        if (size == 0) {
+            container[size++] = value;
+            return true;
+        } else {
+            if (!binaryContains(value)) {
+                container = Arrays.copyOf(container, size + 1);
+                container[size++] = value;
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Метод проверяет, есть ли такой объект в множенстве.
      * @param value объект.
      * @return true, если есть.
      */
     public boolean contains(E value) {
         boolean result = false;
+        Arrays.sort(container);
         for (int index = 0; index < size; index++) {
             if (container[index].equals(value)) {
                 result = true;
                 break;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Метод проверяет, есть ли такой объект в множенстве с помощью двоичного поиска.
+     * @param value объект.
+     * @return true, если есть.
+     */
+    public boolean binaryContains(E value) {
+        Arrays.sort(container);
+        boolean result = false;
+        int lowerBound = 0;
+        int upperBound = container.length - 1;
+        int current;
+        while (true) {
+            current = (lowerBound + upperBound) / 2;
+            if (container[current].equals(value)) {
+                result = true;
+                break;
+            } else if (lowerBound > upperBound) {
+                break;
+            } else {
+                Comparable currentValue = (Comparable) container[current];
+                int comp = currentValue.compareTo(value);
+                if (comp < 0) {
+                    lowerBound = current + 1;
+                } else {
+                    upperBound = current - 1;
+                }
             }
         }
         return result;
@@ -78,4 +130,5 @@ public class SimpleSet<E> implements Iterable<E> {
         };
         return it;
     }
+
 }
