@@ -34,7 +34,7 @@ public class User {
         this.birthday.set(year, month, day);
     }
 
-    /*
+
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
@@ -42,7 +42,7 @@ public class User {
         result = 31 * result + (birthday != null ? birthday.get(Calendar.DATE)
                 + birthday.get(Calendar.MONTH) + birthday.get(Calendar.YEAR) : 0);
         return result;
-    } */
+    }
 
     @Override
     public boolean equals(Object o) {
