@@ -34,7 +34,7 @@ public class User {
         this.birthday.set(year, month, day);
     }
 
-
+    //CHECKSTYLE.OFF
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
@@ -57,4 +57,5 @@ public class User {
                 birthday.get(Calendar.MONTH) == user.birthday.get(Calendar.MONTH) &&
                 birthday.get(Calendar.YEAR) == user.birthday.get(Calendar.YEAR): user.birthday == null;
     }
+    //CHECKSTYLE.ON
 }
