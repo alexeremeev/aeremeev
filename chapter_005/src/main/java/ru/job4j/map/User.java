@@ -30,19 +30,17 @@ public class User {
     public User(String name, int children, int day, int month, int year) {
         this.name = name;
         this.children = children;
-        this.birthday = getCalendar(day, month, year);
+        this.birthday = Calendar.getInstance();
+        this.birthday.set(year, month, day);
     }
 
-    /**
-     * Возвращает Calendar с заполненной датой рождения.
-     * @param day день.
-     * @param month месяц.
-     * @param year год.
-     * @return Calendar с заполненной датой рождения.
-     */
-    public Calendar getCalendar(int day, int month, int year) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(year, month, day);
-        return cal;
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + children;
+        result = 31 * result + (birthday != null ? birthday.get(Calendar.DATE) + birthday.get(Calendar.MONTH) + birthday.get(Calendar.YEAR) : 0);
+        return result;
     }
+
 }
