@@ -11,15 +11,15 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
     /**
      * Размер списка.
      */
-    private int size = 0;
+    protected int size = 0;
     /**
      * Головная нода.
      */
-    private Node<E> head;
+    protected Node<E> head;
     /**
      * Крайняя нода.
      */
-    private Node<E> tail;
+    protected Node<E> tail;
 
     /**
      * Геттер элемента головной ноды.
@@ -40,29 +40,33 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
      * Нода, хранящая данные элемента списка.
      * @param <E> дженерик.
      */
-    private class Node<E> {
+     protected class Node<E> {
         /**
          * Данные элемента списка.
          */
-        private E element;
+        protected E element;
         /**
          * Ссылка на следующую ноду.
          */
-        private Node<E> next;
+        protected Node<E> next;
 
         /**
          * Геттер следующей ноды.
          * @return следующая нода.
          */
-        private Node<E> getNext() {
+        public Node<E> getNext() {
             return this.next;
+        }
+
+        public void setNext(Node<E> next) {
+            this.next = next;
         }
 
         /**
          * Геттер элемента ноды.
          * @return хранимиый элемент ноды.
          */
-        private E getElement() {
+        public E getElement() {
             return this.element;
         }
 
@@ -70,7 +74,7 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
          * Конструктор.
          * @param element значение элемента.
          */
-        private Node(E element) {
+        public Node(E element) {
             this.element = element;
         }
     }
@@ -78,9 +82,11 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
     /**
      * Добавление в список.
      * @param e добавляемый элемент.
+     * @return true при добавлении.
      */
     @Override
-    public void add(E e) {
+    public boolean add(E e) {
+
         Node<E> node = new Node<>(e);
         if (head == null) {
             head = node;
@@ -90,6 +96,7 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
             tail = node;
         }
         size++;
+        return true;
     }
 
     /**
