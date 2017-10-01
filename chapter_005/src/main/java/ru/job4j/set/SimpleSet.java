@@ -38,7 +38,7 @@ public class SimpleSet<E> extends DynamicArray<E> {
      */
     public boolean addBinary(E value) {
         boolean result = false;
-        if(!binaryContains(value)) {
+        if (!binaryContains(value)) {
             super.add(value);
             result = true;
         }
