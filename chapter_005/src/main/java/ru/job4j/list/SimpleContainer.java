@@ -8,8 +8,9 @@ public interface SimpleContainer<E> extends Iterable<E> {
     /**
      * Метод добавления элемента список.
      * @param e добавляемый элемент.
+     * @return true при добавлении элемента.
      */
-    void add(E e);
+    boolean add(E e);
 
     /**
      * Получение элемента из списка по индексу.

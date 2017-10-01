@@ -1,3 +1,4 @@
+//CHECKSTYLE.OFF
 package ru.job4j.list;
 
 import java.util.Arrays;
@@ -6,17 +7,17 @@ import java.util.NoSuchElementException;
 
 /**
  * class DynamicArray - простая реализиация динамического массива.
- * @param <E>
+ * @param <E> дженерик.
  */
 public class DynamicArray<E> implements SimpleContainer<E> {
     /**
      * Массив для хранения элементов.
      */
-    private Object[] container;
+    protected Object[] container;
     /**
      * Индекс последнего элемента в массиве.
      */
-    private int index = 0;
+    protected int index = 0;
 
     /**
      * Дефолтный конструктор. Создается массив на 1 элемент.
@@ -37,14 +38,15 @@ public class DynamicArray<E> implements SimpleContainer<E> {
      * Добавление элемента в массив.
      * @param value элемент.
      */
-    public void add(E value) {
+    public boolean add(E value) {
         if (index < container.length) {
             container[index++] = value;
         } else {
-            int newCapacity = container.length + 10;
+            int newCapacity = container.length + 1;
             container = Arrays.copyOf(container, newCapacity);
             container[index++] = value;
         }
+        return true;
     }
 
     /**
@@ -82,3 +84,4 @@ public class DynamicArray<E> implements SimpleContainer<E> {
         return it;
     }
 }
+//CHECKSTYLE.ON
