@@ -1,3 +1,4 @@
+//CHECKSTYLE.OFF
 package ru.job4j.list;
 
 import java.util.Iterator;
@@ -179,3 +180,4 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
         return it;
     }
 }
+//CHECKSTYLE.ON

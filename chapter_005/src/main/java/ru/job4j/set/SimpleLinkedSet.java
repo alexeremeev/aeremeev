@@ -15,7 +15,7 @@ public class SimpleLinkedSet<E> extends SimpleLinkedList<E> {
     @Override
     public boolean add(E value) {
         boolean result = false;
-        if(!contains(value)) {
+        if (!contains(value)) {
             super.add(value);
             result = true;
         }
