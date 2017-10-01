@@ -112,6 +112,36 @@ public class Tree<E extends Comparable<E>> implements SimpleTree<E> {
     }
 
     /**
+     * Метод проверки дерева на соответствие бинарному, проходит по всему дереву рекурсивным методом.
+     * @param head головная нода дерева.
+     * @return true, если у каждого родителя не более двух дочерних элементов.
+     */
+    private boolean checkForBinary(Node<E> head) {
+        boolean result = true;
+        if (head != null) {
+            if (head.children.size() > 2) {
+                result = false;
+            } else {
+                for (Node<E> node : head.children) {
+                    result = checkForBinary(node);
+                    if (!result) {
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Возвращает значение метода checkForBinary.
+     * @return true, если у каждого родителя не более двух дочерних элементов.
+     */
+    public boolean isBinary() {
+        return checkForBinary(head);
+    }
+
+    /**
      * Итератор.
      * @return итератор.
      */
@@ -121,7 +151,7 @@ public class Tree<E extends Comparable<E>> implements SimpleTree<E> {
             private List<E> values;
             private int index = 0;
 
-                        @Override
+            @Override
             public boolean hasNext() {
                 if (values == null) {
                     values = new LinkedList<>();
