@@ -3,76 +3,75 @@ package ru.job4j.threads;
 /**
  * class WordsAndSpacesCounter - считает слова и пробелы в тексте.
  */
-public class WordsAndSpacesCounter {
+public class WordsAndSpacesCounter implements Runnable {
     /**
      * Текст.
      */
     private String text;
+    /**
+     * Маркер, что считать.
+     */
+    private String whatToCount;
+
 
     /**
      * Конструктор.
      * @param text текст.
+     * @param whatToCount маркер, что считать.
      */
-    public WordsAndSpacesCounter(String text) {
+    public WordsAndSpacesCounter(String text, String whatToCount) {
         this.text = text;
+        this.whatToCount = whatToCount;
     }
 
-    /**
-     * Метод считает пробелы в тексте.
-     * @return число пробелов.
-     */
-    public int countSpaces() {
-        char[] spaces = this.text.toCharArray();
-        int count = 0;
-        for (Character character : spaces) {
-            if (character == ' ') {
-                count++;
+    @Override
+    public void run() {
+            if (this.whatToCount.equals("Spaces")) {
+                char[] spaces = text.toCharArray();
+                int count = 0;
+                for (Character character : spaces) {
+                    if (character == ' ') {
+                        count++;
+                    }
+                }
+                System.out.println(count);
+            } else if (this.whatToCount.equals("Words")) {
+                String trim = text.trim();
+                if (trim.isEmpty()) {
+                    System.out.println(0);
+                } else {
+                    String[] words = trim.split("\\s+");
+                    System.out.println(words.length);
+                }
             }
         }
-        return count;
-    }
 
-    /**
-     * Метод считает число слов в тексте.
-     * @return число слов.
-     */
-    public int countWords() {
-        String trim = this.text.trim();
-        if (trim.isEmpty()) {
-            return 0;
-        } else {
-            String[] words = trim.split("\\s+");
-            return words.length;
-        }
-    }
-
-    /**
+      /**
      * Основной метод для демонстрации нескольких потоков.
      * @param args аругменты.
      */
     public static void main(String[] args) {
-        System.out.println("Start!");
         StringBuilder builder = new StringBuilder();
         builder.append("Кадзуо Исигуро родился в 1954 году в Нагасаки.");
         builder.append(" В 1960 году его семья переехала в Великобританию. Исигуро написал семь романов.");
         builder.append(" Его «Остаток дня» (1989 год) был удостоен Букеровской премии и экранизирован.");
         builder.append(" Все романы Исигуро, включая «Погребенного великана», переведены на русский язык.");
 
-        WordsAndSpacesCounter counter = new WordsAndSpacesCounter(builder.toString());
-        new Thread() {
-            @Override
-            public void run() {
-                int words = counter.countWords();
-                System.out.println(words);
-            }
-        }.start();
-        new Thread() {
-            @Override
-            public void run() {
-                int spaces = counter.countSpaces();
-                System.out.println(spaces);
-            }
-        }.start();
-        System.out.println("Finish!");
+        Thread threadWords = new Thread(new WordsAndSpacesCounter(builder.toString(), "Words"));
+        Thread threadSpaces = new Thread(new WordsAndSpacesCounter(builder.toString(), "Spaces"));
+        System.out.println("Start");
+        try {
+            threadSpaces.start();
+            threadSpaces.join(2000);
+            threadWords.start();
+            threadWords.join();
+        } catch (InterruptedException iee) {
+            System.out.println("Interrupt");
+        }
+
+        System.out.println("Finish");
+
     }
+
+
 }
