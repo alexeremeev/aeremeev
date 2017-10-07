@@ -27,14 +27,20 @@ public class WordsAndSpacesCounter implements Runnable {
     @Override
     public void run() {
             if (this.whatToCount.equals("Spaces")) {
-                char[] spaces = text.toCharArray();
-                int count = 0;
-                for (Character character : spaces) {
-                    if (character == ' ') {
-                        count++;
+                try{
+                    Thread.sleep(3000);
+                    char[] spaces = text.toCharArray();
+                    int count = 0;
+                    for (Character character : spaces) {
+                        if (character == ' ') {
+                            count++;
+                        }
                     }
+                    System.out.println(count);
+                } catch (InterruptedException ie) {
+                    System.out.println("Interrupted in run() method!");
                 }
-                System.out.println(count);
+
             } else if (this.whatToCount.equals("Words")) {
                 String trim = text.trim();
                 if (trim.isEmpty()) {
@@ -44,6 +50,7 @@ public class WordsAndSpacesCounter implements Runnable {
                     System.out.println(words.length);
                 }
             }
+
         }
 
       /**
@@ -59,10 +66,18 @@ public class WordsAndSpacesCounter implements Runnable {
 
         Thread threadWords = new Thread(new WordsAndSpacesCounter(builder.toString(), "Words"));
         Thread threadSpaces = new Thread(new WordsAndSpacesCounter(builder.toString(), "Spaces"));
+        long start = System.currentTimeMillis();
+        long wait = 1000;
         System.out.println("Start");
         try {
             threadSpaces.start();
-            threadSpaces.join(2000);
+            while (threadSpaces.isAlive()) {
+                threadSpaces.join(1000);
+                if (System.currentTimeMillis() + start > wait && threadSpaces.isAlive()) {
+                    System.out.println("Interrupting threadSpaces!");
+                    threadSpaces.interrupt();
+                }
+            }
             threadWords.start();
             threadWords.join();
         } catch (InterruptedException iee) {
