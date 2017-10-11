@@ -1,6 +1,9 @@
 //CHECKSTYLE.OFF
 package ru.job4j.list;
 
+import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.ThreadSafe;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -8,6 +11,7 @@ import java.util.NoSuchElementException;
  * class SimpleLinkedList - реализация простого односвязного списка.
  * @param <E> дженерик.
  */
+@ThreadSafe
 public class SimpleLinkedList<E> implements SimpleContainer<E> {
     /**
      * Размер списка.
@@ -86,7 +90,8 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
      * @return true при добавлении.
      */
     @Override
-    public boolean add(E e) {
+    @GuardedBy("this")
+    public synchronized boolean add(E e) {
 
         Node<E> node = new Node<>(e);
         if (head == null) {
@@ -106,7 +111,8 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
      * @return элемент.
      */
     @Override
-    public E get(int index) {
+    @GuardedBy("this")
+    public synchronized E get(int index) {
         Node<E> current = head;
         if (index < size) {
             for (int i = 0; i < index; i++) {
@@ -120,7 +126,8 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
      * Удаление ноды из списка по значению элемента.
      * @param value элемент.
      */
-    public void remove(E value) {
+    @GuardedBy("this")
+    public synchronized void remove(E value) {
         Node<E> previous = null;
         Node<E> current = head;
 

@@ -1,6 +1,9 @@
 //CHECKSTYLE.OFF
 package ru.job4j.list;
 
+import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.ThreadSafe;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -9,6 +12,7 @@ import java.util.NoSuchElementException;
  * class DynamicArray - простая реализиация динамического массива.
  * @param <E> дженерик.
  */
+@ThreadSafe
 public class DynamicArray<E> implements SimpleContainer<E> {
     /**
      * Массив для хранения элементов.
@@ -38,7 +42,8 @@ public class DynamicArray<E> implements SimpleContainer<E> {
      * Добавление элемента в массив.
      * @param value элемент.
      */
-    public boolean add(E value) {
+    @GuardedBy("this")
+    public synchronized boolean add(E value) {
         if (index < container.length) {
             container[index++] = value;
         } else {
@@ -54,7 +59,8 @@ public class DynamicArray<E> implements SimpleContainer<E> {
      * @param index индекс элемента.
      * @return элемент.
      */
-    public E get(int index) {
+    @GuardedBy("this")
+    public synchronized E get(int index) {
         if (index < container.length) {
             return (E) container[index];
         } else {
