@@ -3,7 +3,9 @@ package ru.job4j.tree;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.NoSuchElementException;
+import java.util.Stack;
 
 /**
  * class BinaryTree - простая реализация бинарного дерево.
@@ -102,6 +104,56 @@ public class BinaryTree<E extends Comparable<E>> implements SimpleBinaryTree<E> 
             getListOfValues(head.left, values);
             values.add(head.value);
             getListOfValues(head.right, values);
+        }
+    }
+
+    /**
+     * Метод меняет местами дочерние ноды.
+     * @param node нода.
+     */
+    private void swapChildNodes(Node node) {
+        Node<E> swap = node.left;
+        node.left = node.right;
+        node.right = swap;
+    }
+
+    /**
+     * Инвертирует дерево с помощью обхода DFS.
+     */
+    public void swapViaDFS() {
+        Stack<Node> stack = new Stack<>();
+        stack.push(this.head);
+        while (!stack.empty()) {
+            Node<E> swap = stack.peek();
+            if (swap != null) {
+                swapChildNodes(stack.pop());
+                if (swap.right != null) {
+                    stack.push(swap.right);
+                }
+                if (swap.left != null) {
+                    stack.push(swap.left);
+                }
+            }
+        }
+    }
+
+    /**
+     * Инвертирует дерево с помощью обхода BFS.
+     */
+    public void swapViaBFS() {
+        LinkedList<Node> list = new LinkedList<>();
+        list.add(this.head);
+        while (!list.isEmpty()) {
+            Node<E> swap = list.peek();
+            if (swap != null) {
+                swapChildNodes(list.poll());
+                if (swap.right != null) {
+                    list.offer(swap.right);
+                }
+                if (swap.left != null) {
+                    list.offer(swap.left);
+                }
+           }
         }
     }
 

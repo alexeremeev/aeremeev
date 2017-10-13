@@ -34,4 +34,53 @@ public class BinaryTreeTest {
 
         assertThat(result, is(expected));
     }
+
+    /**
+     * Тест инвертирования дерева с помощью DFS.
+     */
+    @Test
+    public void whenSwappingViaDFSThenGetInvertedTree() {
+        BinaryTree<Integer> tree = new BinaryTree<>();
+        tree.add(5);
+        tree.add(2);
+        tree.add(2);
+        tree.add(3);
+        tree.add(6);
+        tree.add(9);
+        tree.swapViaDFS();
+        List<Integer> result = new ArrayList<>();
+
+        for (Integer value: tree) {
+            result.add(value);
+        }
+
+        List<Integer> expected = new ArrayList<>(Arrays.asList(9, 6, 5, 3, 2, 2));
+
+        assertThat(result, is(expected));
+    }
+
+    /**
+     * Тест инвертирования дерева с помощью BFS.
+     */
+    @Test
+    public void whenSwappingViaBFSThenGetInvertedTree() {
+        BinaryTree<Integer> tree = new BinaryTree<>();
+        tree.add(5);
+        tree.add(2);
+        tree.add(2);
+        tree.add(3);
+        tree.add(6);
+        tree.add(9);
+        tree.swapViaBFS();
+        List<Integer> result = new ArrayList<>();
+
+        for (Integer value: tree) {
+            result.add(value);
+        }
+
+        List<Integer> expected = new ArrayList<>(Arrays.asList(9, 6, 5, 3, 2, 2));
+
+        assertThat(result, is(expected));
+    }
+
 }
