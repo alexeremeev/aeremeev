@@ -39,6 +39,6 @@ public class CountTest {
         } catch (InterruptedException ie) {
             ie.printStackTrace();
         }
-        assertThat(counter.getCount(), is(600));
+        assertThat(counter.getCount(), is(expected));
     }
 }

@@ -17,7 +17,8 @@ public class Count {
      * Геттер.
      * @return счетчик.
      */
-    public int getCount() {
+    @GuardedBy("this")
+    public synchronized int getCount() {
         return count;
     }
 
