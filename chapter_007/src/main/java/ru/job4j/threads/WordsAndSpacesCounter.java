@@ -27,7 +27,7 @@ public class WordsAndSpacesCounter implements Runnable {
     @Override
     public void run() {
             if (this.whatToCount.equals("Spaces")) {
-                try{
+                try {
                     Thread.sleep(3000);
                     char[] spaces = text.toCharArray();
                     int count = 0;
