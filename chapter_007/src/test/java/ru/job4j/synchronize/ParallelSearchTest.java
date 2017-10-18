@@ -21,16 +21,10 @@ public class ParallelSearchTest {
         String text = "Finally, it is worth reading the documentation.";
         ArrayList<String> exts = new ArrayList<>(Arrays.asList("xml", "txt"));
         ParallelSearch ps = new ParallelSearch("C:/projects/", text, exts);
-        Thread search = new Thread(ps);
-        try {
-            search.start();
-            search.join();
-        } catch (InterruptedException ie) {
-            ie.printStackTrace();
-        }
+        ps.find();
         List<String> result = ps.getResult();
         List<String> expected = new ArrayList<>(Arrays.asList("C:\\projects\\aeremeev\\checkstyle.xml",
-                "C:\\projects\\aeremeev\\chapter_007\\target\\checkstyle-checker.xml",
+                "C:\\projects\\aeremeev\\chapter_005\\target\\checkstyle-checker.xml",
                 "C:\\projects\\aeremeev\\target\\checkstyle-checker.xml"));
         for (String path : result) {
             System.out.println("Text found in: " + path);

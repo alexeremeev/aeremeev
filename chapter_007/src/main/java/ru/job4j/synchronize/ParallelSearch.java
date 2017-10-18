@@ -1,8 +1,5 @@
 package ru.job4j.synchronize;
 
-import net.jcip.annotations.GuardedBy;
-import net.jcip.annotations.ThreadSafe;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
@@ -10,28 +7,43 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 
 /**
  * class ParallelSearch - параллельный поиск текста в файлах.
  */
-@ThreadSafe
-public class ParallelSearch implements Runnable {
+public final class ParallelSearch {
     /**
      * Корневая папка.
      */
-    private String root;
+    private final String root;
     /**
      * Текст для поиска.
      */
-    private String text;
+    private final String text;
     /**
      * Список расширений файлов, в которых нужно искать.
      */
-    private List<String> exts;
+    private final List<String> exts;
     /**
      * Список файлов, где найден текст.
      */
-    private List<String> result = new ArrayList<>();
+    private final CopyOnWriteArrayList<String> result = new CopyOnWriteArrayList<>();
+    /**
+     * Получаем количество тредов CPU.
+     */
+    //CHECKSTYLE.OFF
+    private static final int CPU_THREADS = Runtime.getRuntime().availableProcessors();
+    //CHECKSTYLE.ON
+    /**
+     * Тред пул.
+     */
+    private final ExecutorService executorService = Executors.newFixedThreadPool(CPU_THREADS);
+
 
     /**
      * Конструктор.
@@ -50,18 +62,8 @@ public class ParallelSearch implements Runnable {
      * @return список результатов поиска.
      */
     public List<String> getResult() {
-        return result;
-    }
-
-    /**
-     * Добавление успешного результата поиска в список.
-     * @param path полный путь файла.
-     * @return true, если добавлено.
-     */
-    @GuardedBy("this")
-    private synchronized boolean addToResult(String path) {
-        result.add(path);
-        return true;
+        List<String> list = new ArrayList<>(result);
+        return list;
     }
 
     /**
@@ -71,7 +73,7 @@ public class ParallelSearch implements Runnable {
      */
     private void searchDir(File root, List<String> dirs) {
         try {
-            File[] files = root.listFiles();
+           final File[] files = root.listFiles();
             for (File file: files) {
                 if (file.isDirectory()) {
                     dirs.add(file.getCanonicalPath());
@@ -104,7 +106,7 @@ public class ParallelSearch implements Runnable {
      * @return массив файлов из директории dirName по фильтру exts.
      */
     private File[] finder(String dirName) {
-        File dir = new File(dirName);
+        final File dir = new File(dirName);
         return dir.listFiles(new GenericExtFilter());
     }
 
@@ -117,7 +119,7 @@ public class ParallelSearch implements Runnable {
     private boolean searchText(File file, String text) {
         boolean searchResult = false;
         if (readFile(file).contains(text)) {
-            addToResult(file.getPath());
+            result.add(file.getPath());
             searchResult = true;
         }
         return searchResult;
@@ -129,7 +131,7 @@ public class ParallelSearch implements Runnable {
      * @return String.
      */
     private static String readFile(File file) {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(file));
@@ -160,26 +162,23 @@ public class ParallelSearch implements Runnable {
      *    Если текст найден - добавляем в список result.
      *
      */
-    @Override
-    public void run() {
-        ArrayList<String> dirs = new ArrayList<>();
+    public void find() {
+        final ArrayList<String> dirs = new ArrayList<>();
         searchDir(new File(this.root), dirs);
         for (String dir : dirs) {
-            Thread threadSearch = new Thread() {
-                @Override
-                public void run() {
-                    File[] filesByExt = finder(dir);
-                    for (File file: filesByExt) {
-                        searchText(file, text);
-                    }
+            executorService.execute(new Thread(() -> {
+                File[] filesByExt = finder(dir);
+                for (File file: filesByExt) {
+                    searchText(file, text);
                 }
-            };
-            try {
-                threadSearch.start();
-                threadSearch.join();
-            } catch (InterruptedException ie) {
-                ie.printStackTrace();
-            }
+            }));
+        }
+        try {
+            executorService.shutdown();
+            executorService.awaitTermination(1000, TimeUnit.MILLISECONDS);
+
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
         }
     }
 }
