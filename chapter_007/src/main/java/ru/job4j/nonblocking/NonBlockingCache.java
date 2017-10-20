@@ -4,6 +4,7 @@ import javax.persistence.OptimisticLockException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
 
 /**
  * class NonBlockingCache - неблокирующий кэш на основе ConcurrentHashMap.
@@ -27,19 +28,24 @@ public class NonBlockingCache {
     /**
      * Обновление задачи в хранилище.
      * @param task задача.
-     * @return true, если удалось обновить.
+     * @throws OptimisticLockException OptimisticLockException.
      */
-    public boolean update(Task task) {
-        boolean result = false;
-        int temp = cache.get(task.getId()).getVersion();
-        if (cache.get(task.getId()).getVersion() == temp) {
-            task.setVersion(temp + 1);
-            cache.replace(task.getId(), task);
-            result = true;
-        } else {
-            throw new OptimisticLockException("Task already modified by another user!");
-        }
-        return result;
+    public void update(Task task) throws OptimisticLockException {
+        cache.computeIfPresent(task.getId(), new BiFunction<Integer, Task, Task>() {
+            @Override
+            public Task apply(Integer integer, Task current) {
+                Task result;
+                task.setVersion(current.getVersion());
+                if (current.getVersion() == task.getVersion()) {
+                    task.setVersion(current.getVersion() + 1);
+                    result = task;
+                } else {
+                    throw new OptimisticLockException("Task is already modified by another user!");
+                }
+                return result;
+            }
+        });
+
     }
 
     /**
