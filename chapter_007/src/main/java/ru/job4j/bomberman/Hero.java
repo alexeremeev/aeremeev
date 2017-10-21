@@ -7,19 +7,21 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * class Hero - герой.
  */
-public final class Hero implements Runnable {
+public abstract class Hero implements Runnable {
     /**
      * Имя.
      */
-    private String name;
+    private final String name;
     /**
      * Игровое поле.
      */
-    private final GameField gameField;
+    //CHECKSTYLE.OFF
+    protected final GameField gameField;
     /**
      * Позиция на игровом поле.
      */
-    private ReentrantLock position;
+    protected ReentrantLock position;
+    //CHECKSTYLE.ON
     /**
      * Координата по X.
      */
@@ -83,9 +85,18 @@ public final class Hero implements Runnable {
         if (result) {
             this.x += direction.getX();
             this.y += direction.getY();
-            System.out.println(String.format("%s moved %s to x = %s y = %s", this.name, direction.toString(), this.x, this.y));
+            System.out.println(String.format("%s moved %s to x = %s y = %s",
+                    this.name, direction.toString(), this.x, this.y));
         }
         return result;
+    }
+
+    /**
+     * Получение текущей позиции на игровом поле.
+     * @return текущая позиция на игровом поле.
+     */
+    public ReentrantLock getPosition() {
+        return this.position;
     }
 
     @Override
@@ -97,7 +108,7 @@ public final class Hero implements Runnable {
                 Thread.sleep(500);
             }
         } catch (InterruptedException ie) {
-            ie.printStackTrace();
+            System.out.println("Oh no!");
         }
     }
 }
