@@ -2,8 +2,6 @@ package ru.job4j.tracker.database;
 
 import ru.job4j.tracker.Item;
 
-import java.io.*;
-import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,18 +14,13 @@ public class Database {
 
     /**
      * Установление соединения с БД.
-     * @param settingsFileName файл с настройками подключения.
-     *                         Формат файла:
-     *                         url;
-     *                         username;
-     *                         password;
+     * @param url url БД.
+     * @param username имя пользователя.
+     * @param password пароль.
      */
-    public void setConnection(String settingsFileName) {
+    public void setConnection(String url, String username, String password) {
         try {
-            String[] settings = this.fileToQuery(settingsFileName);
-            this.connection = DriverManager.getConnection(settings[0], settings[1], settings[2]);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+            this.connection = DriverManager.getConnection(url, username, password);
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
@@ -45,32 +38,50 @@ public class Database {
             }
         }
     }
-
     /**
-     * Проверка, существует ли уже структура в БД.
-     * Если нет, то создает новую из файла со скриптом.
-     * @param sqlFile файл со скриптом.
+     * Выполняет запросы SELECT в БД.
+     * @param query sql запрос.
+     * @return значение первой колонки.
      */
-    public void createTable(String sqlFile) {
+    public int select(String query) {
+        int result = 0;
+
+        Statement st = null;
         ResultSet rs = null;
+
         try {
-            rs = this.connection.getMetaData().getTables(null, null, "items", null);
-            if (!rs.next()) {
-                this.runScript(sqlFile);
+            st = this.connection.createStatement();
+            rs = st.executeQuery(query);
+
+            if (rs.next()) {
+                result = rs.getInt(1);
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         } finally {
             this.closeResult(rs);
+            this.closeStatement(st);
         }
+        return result;
     }
 
     /**
-     * Сброс таблицы.
-     * @param sqlFile файл со скриптом.
+     * Исполняет запросы Create к SQL БД.
+     * @param query запрос.
+     * @return количество обновленных строк.
      */
-    public void clearTable(String sqlFile) {
-        this.runScript(sqlFile);
+    public int execute(String query) {
+        int result = 0;
+        Statement st = null;
+        try {
+            st = this.connection.createStatement();
+            result = st.executeUpdate(query);
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            this.closeStatement(st);
+        }
+        return result;
     }
 
     /**
@@ -78,18 +89,23 @@ public class Database {
      * @param query запрос.
      * @param fields поля ? для PreparedStatement.
      */
-    public void execute(String query, Object[] fields) {
+    public void executeWithArgs(String query, Object[] fields) {
         PreparedStatement ps = null;
         try {
+            this.connection.setAutoCommit(false);
             ps = this.connection.prepareStatement(query);
-
             for (int i = 0; i < fields.length; i++) {
                 ps.setObject(i + 1, fields[i]);
             }
-
             ps.executeUpdate();
+            this.connection.commit();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
+            try {
+                this.connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         } finally {
             this.closeStatement(ps);
         }
@@ -121,49 +137,6 @@ public class Database {
     }
 
     /**
-     * Метод считывает и выполняет SQL скрипты.
-     * Скрипт не должен содержать маркеров -- * /.
-     */
-    private void runScript(String filename) {
-        try {
-            String[] query = this.fileToQuery(filename);
-            Statement st = this.connection.createStatement();
-            for (int i = 0; i < query.length; i++) {
-                if (!query[i].trim().equals("")) {
-                    st.executeUpdate(query[i]);
-                }
-            }
-            st.close();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
-    }
-
-    /**
-     * Конвертирует файл в массив строковых запросов.
-     * @param filename имя файла
-     * @return массив String[].
-     * @throws IOException IOException
-     */
-    private String[] fileToQuery(String filename) throws IOException {
-        String line;
-        StringBuilder builder = new StringBuilder();
-        String path = Paths.get(".").toAbsolutePath().normalize().toString();
-        FileReader fr = new FileReader(new File(String.format("%s/%s", path, filename)));
-        BufferedReader br = new BufferedReader(fr);
-
-        while ((line = br.readLine()) != null) {
-            builder.append(line);
-        }
-
-        br.close();
-
-        String[] query = builder.toString().split(";");
-        return query;
-    }
-    /**
      * Закрытие ResultSet.
      * @param rs ResultSet.
      */
@@ -177,13 +150,13 @@ public class Database {
         }
     }
     /**
-     * Закрытие PreparedStatement.
-     * @param ps PreparedStatement.
+     * Закрытие Statement.
+     * @param st Statement.
      */
-    private void closeStatement(PreparedStatement ps) {
-        if (ps != null) {
+    private void closeStatement(Statement st) {
+        if (st != null) {
             try {
-                ps.close();
+                st.close();
             } catch (SQLException sqle) {
                 sqle.printStackTrace();
             }

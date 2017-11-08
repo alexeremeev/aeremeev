@@ -15,7 +15,11 @@ public class StartUi {
     /**
      * Интерфейс для взаимодейстия в БД.
      */
-    Database database;
+    private Database database;
+    /**
+     * Загрузчик настроек.
+     */
+    private Settings settings;
     /**
      * Метод ввода данных.
      */
@@ -30,18 +34,26 @@ public class StartUi {
      * @param input метод ввода данных.
      * @param tracker трекер.
      * @param database БД.
+     * @param settings settings.
      */
-    public StartUi(Input input, Tracker tracker, Database database) {
+    public StartUi(Input input, Tracker tracker, Database database, Settings settings) {
         this.input = input;
         this.tracker = tracker;
         this.database = database;
+        this.settings = settings;
     }
     /**
      * Инициализация меню.
      */
     public void init() {
-        this.database.setConnection("settings.txt");
-        this.database.createTable("create_tables.sql");
+
+        String url = this.settings.getSettings("DB_url");
+        String username = this.settings.getSettings("DB_username");
+        String password = this.settings.getSettings("DB_password");
+        this.database.setConnection(url, username, password);
+        if (database.select(this.settings.getSettings("SQL_CHECK_TABLE")) == 0) {
+            database.execute(this.settings.getSettings("SQL_CREATE_TABLE"));
+        }
         MenuTracker menu = new MenuTracker(this.input, this.tracker);
         menu.fillActions();
         int[] ranges = new int[menu.getAction().size()];
@@ -71,7 +83,8 @@ public class StartUi {
     public static void main(String[] args) {
         Input input = new ValidateInput();
         Database base = new Database();
-        Tracker tracker = new Tracker(base);
-        new StartUi(input, tracker, base).init();
+        Settings settings = new Settings("tracker.properties");
+        Tracker tracker = new Tracker(base, settings);
+        new StartUi(input, tracker, base, settings).init();
     }
 }

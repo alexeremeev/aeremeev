@@ -14,13 +14,18 @@ public class Tracker {
      * Интерфейс для взаимодействия с БД.
      */
     private Database database;
+    /**
+     * Настройки settings.
+     */
+    private Settings settings;
 
     /**
      * Конструктор.
      * @param database интерфейс для взаимодействия с БД.
      */
-    public Tracker(Database database) {
+    public Tracker(Database database, Settings settings) {
         this.database = database;
+        this.settings = settings;
     }
     /**
      * Метод добавления заявки в систему.
@@ -28,9 +33,9 @@ public class Tracker {
      * @return добавленная заявка.
      */
     public Item add(Item item) {
-        String query = "INSERT INTO ITEMS (name, description, create_date) VALUES (?, ?, ?)";
+        String query = this.settings.getSettings("SQL_INSERT");
         Object[] fields = new Object[] {item.getName(), item.getDescription(), new Timestamp(System.currentTimeMillis())};
-        database.execute(query, fields);
+        database.executeWithArgs(query, fields);
         return item;
     }
 
@@ -39,9 +44,9 @@ public class Tracker {
      * @param item заявка.
      */
     public void update(Item item) {
-        String query = "UPDATE ITEMS SET name = ?, description = ? where id = ?";
+        String query = this.settings.getSettings("SQL_UPDATE");
         Object[] fields = new Object[] {item.getName(), item.getDescription(), item.getId()};
-        database.execute(query, fields);
+        database.executeWithArgs(query, fields);
     }
 
     /**
@@ -49,9 +54,9 @@ public class Tracker {
      * @param item заявка.
      */
     public void delete(Item item) {
-        String query = "DELETE FROM ITEMS WHERE id = ?";
+        String query = this.settings.getSettings("SQL_DELETE");
         Object[] fields = new Object[] {item.getId()};
-        database.execute(query, fields);
+        database.executeWithArgs(query, fields);
     }
 
     /**
@@ -59,7 +64,7 @@ public class Tracker {
      * @return список добавленны заявок.
      */
     public List<Item> findAll() {
-        String query = "SELECT * FROM ITEMS WHERE id <> ?";
+        String query = this.settings.getSettings("SQL_FIND_ALL");
         Object[] fields = new Object[] {0};
         return database.getItems(query, fields);
     }
@@ -70,7 +75,7 @@ public class Tracker {
      * @return список всех заявок с указанным именем.
      */
     public List<Item> findByName(String name) {
-        String query = "SELECT * FROM ITEMS WHERE name = ?";
+        String query = this.settings.getSettings("SQL_FIND_BY_NAME");
         Object[] fields = new Object[] {name};
         return database.getItems(query, fields);
     }
@@ -81,7 +86,7 @@ public class Tracker {
      * @return заявка.
      */
     public Item findById(int id) {
-        String query = "SELECT * FROM ITEMS WHERE id = ?";
+        String query = this.settings.getSettings("SQL_FIND_BY_ID");
         Object[] fields = new Object[] {id};
         List<Item> list = database.getItems(query, fields);
         if (!list.isEmpty()) {

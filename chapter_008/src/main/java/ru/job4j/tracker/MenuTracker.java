@@ -26,16 +26,15 @@ class EditItem extends BaseAction {
     public void execute(Input input, Tracker tracker) {
         String strId = input.ask("Enter item ID: ");
         int id = Integer.valueOf(strId);
-        try {
+        if (tracker.findById(id) == null) {
+            System.out.println("No such item in tracker!");
+        } else {
             System.out.println(tracker.findById(id).toString());
             String name = input.ask("Enter new name: ");
             String description = input.ask("Enter new description: ");
             Item swap = new Item(name, description, System.currentTimeMillis());
             swap.setId(id);
             tracker.update(swap);
-            System.out.println(tracker.findById(id));
-        } catch (NullPointerException npe) {
-            System.out.println("No such item in tracker!");
         }
     }
 }
@@ -204,14 +203,13 @@ public class MenuTracker {
          * @param tracker трекер.
          */
         public void execute(Input input, Tracker tracker) {
-            try {
-                String strId = input.ask("Enter item ID: ");
-                int id = Integer.valueOf(strId);
-                System.out.println(tracker.findById(id).toString());
-            } catch (NullPointerException npe) {
+            String strId = input.ask("Enter item ID: ");
+            int id = Integer.valueOf(strId);
+            if (tracker.findById(id) == null) {
                 System.out.println("No such item found!");
+            } else {
+                System.out.println(tracker.findById(id).toString());
             }
-
         }
     }
 
