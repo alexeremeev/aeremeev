@@ -15,7 +15,7 @@ public class DatabaseTest {
      * Тест правильности вычислений на выборке из 100 рядов.
      */
     @Test
-    public void whenProcessDatabaseThenRecieveCorrectResult() {
+    public void whenProcessDatabaseThenReceiveCorrectResult() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));
         String expected = "5050\r\n";

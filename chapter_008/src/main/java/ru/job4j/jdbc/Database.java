@@ -17,12 +17,10 @@ public class Database {
     /**
      * Устанавливает соединение с базой данных.
      * @param url ссыылка на базу данных.
-     * @param username имя пользователя.
-     * @param password пароль.
      */
-    public void setConnection(String url, String username, String password) {
+    public void setConnection(String url) {
         try {
-            this.connection = DriverManager.getConnection(url, username, password);
+            this.connection = DriverManager.getConnection(url);
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
@@ -97,20 +95,16 @@ public class Database {
      */
     public void createTable() {
         PreparedStatement ps = null;
-        ResultSet rs = null;
         try {
-            rs = this.connection.getMetaData().getTables(null, null, "test", null);
-            if (rs.next()) {
-                ps = this.connection.prepareStatement("TRUNCATE TABLE test");
+            ps = this.connection.prepareStatement("CREATE TABLE IF NOT EXISTS test (field INTEGER)");
+            int result = ps.executeUpdate();
+            if (result == 0) {
+                ps = this.connection.prepareStatement("DELETE FROM test");
                 ps.executeUpdate();
-            } else {
-                ps = this.connection.prepareStatement("CREATE TABLE test (field INTEGER )");
-                ps.execute();
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         } finally {
-            this.closeResult(rs);
             this.closeStatement(ps);
         }
     }
@@ -150,10 +144,8 @@ public class Database {
     public void init(int rows) {
         XMLconverter xmlconverter = new XMLconverter();
         Entries entries = new Entries();
-        String url = "jdbc:postgresql://localhost:5432/sqlite";
-        String username = "postgres";
-        String password = "root";
-        this.setConnection(url, username, password);
+        String url = "jdbc:sqlite:test.db";
+        this.setConnection(url);
         this.createTable();
         this.fillTable(rows);
         List<Entry> list = this.getTable(rows);

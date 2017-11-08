@@ -77,14 +77,8 @@ public class XMLconverter {
             XPathFactory xPathFactory = XPathFactory.newInstance();
             XPath xPath = xPathFactory.newXPath();
             result = xPath.evaluate(function, document);
-        } catch (ParserConfigurationException pce) {
-            pce.printStackTrace();
-        } catch (SAXException saxe) {
-            saxe.printStackTrace();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        } catch (XPathExpressionException xpee) {
-            xpee.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return result;
     }
