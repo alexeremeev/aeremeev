@@ -55,6 +55,14 @@
         <version>3.20.1</version>
         <scope>test</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>3.1.0</version>
+        <scope>provided</scope>
+    </dependency>
+
 </dependencies>
 
 <build>
@@ -90,5 +98,6 @@
     <module>chapter_005</module>
     <module>chapter_007</module>
     <module>chapter_008</module>
+    <module>chapter_009</module>
 </modules>
 </project>
