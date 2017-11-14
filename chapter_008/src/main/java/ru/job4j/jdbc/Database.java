@@ -76,13 +76,20 @@ public class Database {
         int result = 0;
         PreparedStatement ps = null;
         try {
+            this.connection.setAutoCommit(false);
             ps = this.connection.prepareStatement("INSERT INTO test (field) VALUES (?)");
             for (int index = 1; index <= rows; index++) {
                 ps.setInt(1, index);
                 result += ps.executeUpdate();
             }
+            this.connection.commit();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
+            try {
+                this.connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         } finally {
             this.closeStatement(ps);
         }
