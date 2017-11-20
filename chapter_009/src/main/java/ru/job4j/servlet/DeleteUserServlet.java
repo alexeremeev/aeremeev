@@ -16,6 +16,6 @@ public class DeleteUserServlet extends HttpServlet {
         resp.setContentType("text/html");
         String login = req.getParameter("login");
         UserStorage.getInstance().deleteUser(UserStorage.getInstance().findByLogin(login));
-        resp.sendRedirect(String.format("%s/index.jsp", req.getContextPath()));
+        resp.sendRedirect(String.format("%s/", req.getContextPath()));
     }
 }

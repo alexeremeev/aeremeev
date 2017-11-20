@@ -1,12 +1,12 @@
 <web-app>
     <servlet>
-        <servlet-name>EchoServlet</servlet-name>
-        <servlet-class>ru.job4j.servlets.EchoServlet</servlet-class>
+        <servlet-name>Users Controller Servlet</servlet-name>
+        <servlet-class>ru.job4j.servlets.UsersController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>UsersServlet</servlet-name>
         <servlet-class>ru.job4j.userstorage.UsersServlet</servlet-class>
-        <load-on-startup>0</load-on-startup>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>CreateUserServlet</servlet-name>
@@ -26,12 +26,12 @@
     <servlet>
         <servlet-name>GetUserServlet</servlet-name>
         <servlet-class>ru.job4j.servlet.GetUserServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
+        <load-on-startup>0</load-on-startup>
     </servlet>
 
 
     <servlet-mapping>
-        <servlet-name>EchoServlet</servlet-name>
+        <servlet-name>Users Controller Servlet</servlet-name>
         <url-pattern>/echo</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
@@ -52,6 +52,6 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>GetUserServlet</servlet-name>
-        <url-pattern>/get</url-pattern>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
 </web-app>

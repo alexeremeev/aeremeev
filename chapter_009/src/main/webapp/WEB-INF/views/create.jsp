@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%--
   Created by IntelliJ IDEA.
   User: aeremeev
@@ -12,7 +13,7 @@
 </head>
 <body>
     <h1>Add New User</h1>
-    <form action='<%=request.getContextPath()%>/create' method='post'>
+    <form action='${pageContext.servletContext.contextPath}/create' method='post'>
         <table>
         <tr><td>Name:</td><td><input type='name' name='name'/></td></tr>
         <tr><td>Login:</td><td><input type='login' name='login'/></td></tr>
@@ -21,6 +22,6 @@
         </table>
     </form>
     <br/>
-    <a href=<%=request.getContextPath()%>/index.jsp>View All Users</a>
+    <a href="${pageContext.servletContext.contextPath}/">View All Users</a>
 </body>
 </html>
