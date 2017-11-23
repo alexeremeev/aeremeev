@@ -1,4 +1,6 @@
-package ru.job4j.servlet;
+package ru.job4j.servlet.controller;
+
+import ru.job4j.servlet.UserStorage;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

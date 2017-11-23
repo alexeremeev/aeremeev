@@ -10,24 +10,53 @@
     </servlet>
     <servlet>
         <servlet-name>CreateUserServlet</servlet-name>
-        <servlet-class>ru.job4j.servlet.CreateUserServlet</servlet-class>
+        <servlet-class>ru.job4j.servlet.controller.CreateUserServlet</servlet-class>
         <load-on-startup>4</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>UpdateUserServlet</servlet-name>
-        <servlet-class>ru.job4j.servlet.UpdateUserServlet</servlet-class>
+        <servlet-class>ru.job4j.servlet.controller.UpdateUserServlet</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>DeleteUserServlet</servlet-name>
-        <servlet-class>ru.job4j.servlet.DeleteUserServlet</servlet-class>
+        <servlet-class>ru.job4j.servlet.controller.DeleteUserServlet</servlet-class>
         <load-on-startup>2</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>GetUserServlet</servlet-name>
-        <servlet-class>ru.job4j.servlet.GetUserServlet</servlet-class>
+        <servlet-class>ru.job4j.servlet.controller.GetUserServlet</servlet-class>
         <load-on-startup>0</load-on-startup>
     </servlet>
+    <servlet>
+        <servlet-name>SingIn</servlet-name>
+        <servlet-class>ru.job4j.servlet.controller.SingInController</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>SingOut</servlet-name>
+        <servlet-class>ru.job4j.servlet.controller.SingOutController</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>Create New Role</servlet-name>
+        <servlet-class>ru.job4j.servlet.controller.CreateRoleServlet</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>Update Role</servlet-name>
+        <servlet-class>ru.job4j.servlet.controller.UpdateRoleServlet</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>Delete Role</servlet-name>
+        <servlet-class>ru.job4j.servlet.controller.DeleteRoleServlet</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>ru.job4j.servlet.controller.AuthFilter</filter-class>
+    </filter>
 
 
     <servlet-mapping>
@@ -54,4 +83,28 @@
         <servlet-name>GetUserServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SingIn</servlet-name>
+        <url-pattern>/singin</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SingOut</servlet-name>
+        <url-pattern>/singout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Create New Role</servlet-name>
+        <url-pattern>/createRole</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Update Role</servlet-name>
+        <url-pattern>/updateRole</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Delete Role</servlet-name>
+        <url-pattern>/deleteRole</url-pattern>
+    </servlet-mapping>
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
 </web-app>

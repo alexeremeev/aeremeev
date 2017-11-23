@@ -18,6 +18,12 @@
         <tr><td>Name:</td><td><input type='name' name='name'/></td></tr>
         <tr><td>Login:</td><td><input type='login' name='login'/></td></tr>
         <tr><td>Email:</td><td><input type='email' name='email'/></td></tr>
+        <tr><td>Password:</td><td><input type='password' name='password'/></td></tr>
+        <tr><td>Permissions:</td><td><select name="role" size="1">
+                <c:forEach items = "${roles}" var = "role">
+                    <option value = "${role.id}"><c:out value="${role.name}"></c:out></option>
+                </c:forEach>
+            </select></td></tr>
         <tr><td><input type='submit' value='Save User'/></td></tr>
         </table>
     </form>

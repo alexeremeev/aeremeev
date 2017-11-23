@@ -1,4 +1,4 @@
-package ru.job4j.servlet;
+package ru.job4j.servlet.model;
 
 import java.sql.Timestamp;
 
@@ -22,6 +22,14 @@ public class User {
      * Дата создания пользователя.
      */
     private long createDate;
+    /**
+     * Пароль пользователя.
+     */
+    private String password;
+    /**
+     * Роль пользователя.
+     */
+    private Role role;
 
     /**
      * Конструктор.
@@ -29,12 +37,14 @@ public class User {
      * @param login логин пользователя.
      * @param email e-mail пользователя.
      * @param createDate дата создания пользователя.
+     * @param password пароль пользователя.
      */
-    public User(String name, String login, String email, long createDate) {
+    public User(String name, String login, String email, long createDate, String password) {
         this.name = name;
         this.login = login;
         this.email = email;
         this.createDate = createDate;
+        this.password = password;
     }
 
     /**
@@ -69,11 +79,37 @@ public class User {
         return createDate;
     }
 
+    /**
+     * Геттер пароля.
+     * @return пароль.
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Геттер роли.
+     * @return роль.
+     */
+    public Role getRole() {
+        return role;
+    }
+
+    /**
+     * Сеттер роли.
+     * @param role роль.
+     */
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return String.format("Name: %s | Login: %s | E-mail: %s | Created: %s",
                 this.getName(), this.getLogin(), this.getEmail(), new Timestamp(this.getCreateDate()));
     }
+
+
 
     @Override
     public boolean equals(Object o) {
