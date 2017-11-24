@@ -11,6 +11,11 @@
     <title>Edit User</title>
 </head>
 <body>
+<c:if test="${error != ''}">
+    <div style="background-color: red">
+        <c:out value="${error}"></c:out>
+    </div>
+</c:if>
 <form action='${pageContext.servletContext.contextPath}/update' method='post'>
     <c:if test="${admin == true}">
         <table>

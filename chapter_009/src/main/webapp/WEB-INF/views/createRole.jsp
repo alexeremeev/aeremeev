@@ -11,6 +11,11 @@
     <title>Create New Role</title>
 </head>
 <body>
+<c:if test="${error != ''}">
+    <div style="background-color: red">
+        <c:out value="${error}"></c:out>
+    </div>
+</c:if>
 <h1>Add New Role</h1>
 <form action='${pageContext.servletContext.contextPath}/createRole' method='post'>
     <table>

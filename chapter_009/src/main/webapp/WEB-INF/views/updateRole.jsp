@@ -11,6 +11,11 @@
     <title>Edit Role</title>
 </head>
 <body>
+<c:if test="${error != ''}">
+    <div style="background-color: red">
+        <c:out value="${error}"></c:out>
+    </div>
+</c:if>
 <form action='${pageContext.servletContext.contextPath}/updateRole' method='post'>
         <table>
             <tr><td></td><td><input type='hidden' name='id' value='<c:out value="${role.id}"></c:out>'/></td></tr>

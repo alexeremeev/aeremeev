@@ -27,8 +27,6 @@ public class UpdateUserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html");
-        PrintWriter writer = new PrintWriter(resp.getOutputStream());
         String login;
         int id;
         HttpSession session = req.getSession(false);
@@ -49,8 +47,8 @@ public class UpdateUserServlet extends HttpServlet {
         if (UserStorage.getInstance().updateUser(user)) {
             resp.sendRedirect(String.format("%s/", req.getContextPath()));
         } else {
-            writer.append("Error occurred while updating user!");
-            writer.flush();
+            req.setAttribute("error", "Error occurred while updating user!");
+            doGet(req, resp);
         }
     }
 }

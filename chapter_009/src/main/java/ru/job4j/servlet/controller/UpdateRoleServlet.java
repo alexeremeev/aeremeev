@@ -22,8 +22,6 @@ public class UpdateRoleServlet extends HttpServlet {
     }
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html");
-        PrintWriter writer = new PrintWriter(resp.getOutputStream());
         String name = req.getParameter("name");
         String admin = (req.getParameter("admin"));
         Role role = new Role(name);
@@ -34,8 +32,8 @@ public class UpdateRoleServlet extends HttpServlet {
         if (UserStorage.getInstance().updateRole(role)) {
             resp.sendRedirect(String.format("%s/", req.getContextPath()));
         } else {
-            writer.append("Error occurred while updating user!");
-            writer.flush();
+            req.setAttribute("error", "Error occurred while updating role!");
+            doGet(req, resp);
         }
     }
 }

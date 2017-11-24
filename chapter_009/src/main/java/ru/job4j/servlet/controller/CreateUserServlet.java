@@ -25,8 +25,6 @@ public class CreateUserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html");
-        PrintWriter writer = new PrintWriter(resp.getOutputStream());
         String name = req.getParameter("name");
         String login = req.getParameter("login");
         String email = req.getParameter("email");
@@ -38,10 +36,8 @@ public class CreateUserServlet extends HttpServlet {
         if (UserStorage.getInstance().addUser(user)) {
             resp.sendRedirect(String.format("%s/", req.getContextPath()));
         } else {
-            writer.append("Login already exists! Try again!");
-            writer.append("<br/><a href='create'>Create New User</a>");
-            writer.append("<br/><a href='get'>View All Users</a>");
-            writer.flush();
+            req.setAttribute("error", "Login already exists! Try again!");
+            doGet(req, resp);
         }
     }
 }

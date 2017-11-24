@@ -18,8 +18,6 @@ public class CreateRoleServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html");
-        PrintWriter writer = new PrintWriter(resp.getOutputStream());
         String name = req.getParameter("name");
         String admin = (req.getParameter("admin"));
         Role role = new Role(name);
@@ -30,10 +28,8 @@ public class CreateRoleServlet extends HttpServlet {
         if (UserStorage.getInstance().addRole(role)) {
             resp.sendRedirect(String.format("%s/", req.getContextPath()));
         } else {
-            writer.append("Role already exists! Try again!");
-            writer.append("<br/><a href='create'>Create New Role</a>");
-            writer.append("<br/><a href='get'>View All Users</a>");
-            writer.flush();
+            req.setAttribute("error", "Role already exists! Try again!");
+            doGet(req, resp);
         }
     }
 }
