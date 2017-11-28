@@ -100,4 +100,9 @@ public class Role {
         result = 31 * result + (getAdmin() ? 1 : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return String.format("ID: %s | Name: %s | Admin: %b", this.id, this.name, this.admin);
+    }
 }

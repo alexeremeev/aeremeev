@@ -1,6 +1,7 @@
 package ru.job4j.servlet.controller;
 
 import ru.job4j.servlet.UserStorage;
+import ru.job4j.servlet.model.Address;
 import ru.job4j.servlet.model.Role;
 import ru.job4j.servlet.model.User;
 
@@ -10,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * class UpdateUserServlet - servlet редактирования пользователя.
@@ -22,6 +22,7 @@ public class UpdateUserServlet extends HttpServlet {
         String login = req.getParameter("login");
         req.setAttribute("user", UserStorage.getInstance().findByLogin(login));
         req.setAttribute("roles", UserStorage.getInstance().getRoles());
+        req.setAttribute("countries", UserStorage.getInstance().getCountries());
         req.getRequestDispatcher("/WEB-INF/views/update.jsp").forward(req, resp);
     }
 
@@ -40,10 +41,14 @@ public class UpdateUserServlet extends HttpServlet {
         String name = req.getParameter("name");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
+        String cityId = req.getParameter("city");
+        Address address = new Address();
+        address.setCityId(Integer.valueOf(cityId));
         User user = new User(name, login, email, System.currentTimeMillis(), password);
         Role role = new Role("misc");
         role.setId(id);
         user.setRole(role);
+        user.setAddress(address);
         if (UserStorage.getInstance().updateUser(user)) {
             resp.sendRedirect(String.format("%s/", req.getContextPath()));
         } else {

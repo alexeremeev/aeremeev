@@ -9,30 +9,112 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+    <script>
+        <%@include file="js/countryJson.js"%>
+    </script>
+    <script>
+        <%@include file="js/verifyForm.js"%>
+    </script>
     <title>Create New User</title>
 </head>
+<style>
+    <%@ include file="css/edit.css"%>
+</style>
 <body>
 <c:if test="${error != ''}">
     <div style="background-color: red">
         <c:out value="${error}"></c:out>
     </div>
 </c:if>
-<h1>Add New User</h1>
-<form action='${pageContext.servletContext.contextPath}/create' method='post'>
-    <table>
-        <tr><td>Name:</td><td><input type='name' name='name'/></td></tr>
-        <tr><td>Login:</td><td><input type='login' name='login'/></td></tr>
-        <tr><td>Email:</td><td><input type='email' name='email'/></td></tr>
-        <tr><td>Password:</td><td><input type='password' name='password'/></td></tr>
-        <tr><td>Permissions:</td><td><select name="role" size="1">
-            <c:forEach items = "${roles}" var = "role">
-                <option value = "${role.id}"><c:out value="${role.name}"></c:out></option>
-            </c:forEach>
-        </select></td></tr>
-        <tr><td><input type='submit' value='Save User'/></td></tr>
-    </table>
+<form class="form-horizontal" id="create" action='${pageContext.servletContext.contextPath}/create' method='post' onsubmit="verifyForm();">
+    <fieldset>
+        <legend>Add New User</legend>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="name">Name</label>
+            <div class="col-md-4">
+                <input id="name" name="name" type="text" placeholder="Name" class="form-control input-md" required="">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="login">Login</label>
+            <div class="col-md-4">
+                <input id="login" name="login" type="text" placeholder="Login" class="form-control input-md" required="">
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="email">@mail@</label>
+            <div class="col-md-4">
+                <input id="email" name="email" type="email" placeholder="@" class="form-control input-md" required="">
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="password">Password</label>
+            <div class="col-md-4">
+                <input id="password" name="password" type="password" placeholder="password" class="form-control input-md" required="">
+            </div>
+        </div>
+
+        <!-- Select Basic -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="role">Role</label>
+            <div class="col-md-4">
+                <select id="role" name="role" class="form-control">
+                    <c:forEach items = "${roles}" var = "role">
+                        <option value = "${role.id}"><c:out value="${role.name}"></c:out></option>
+                    </c:forEach>
+                </select>
+            </div>
+        </div>
+        <!-- Select Basic -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="country">Country</label>
+            <div class="col-md-4">
+                <select id="country" name="country" class="form-control">
+                    <option>Select Country</option>
+                    <c:forEach items="${countries}" var="country">
+                        <option value="${country.key}">${country.value}</option>
+                    </c:forEach>
+                </select>
+            </div>
+        </div>
+        <!-- Select Basic -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="city">City</label>
+            <div class="col-md-4">
+                <select id="city" name="city" class="form-control">
+                    <option>Select City</option>
+                </select>
+            </div>
+        </div>
+
+
+
+    </fieldset>
+    <!-- Button -->
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="singlebutton"></label>
+        <div class="col-md-4">
+            <button id="singlebutton" name="singlebutton" class="btn btn-primary" type="submit">Save user</button>
+        </div>
+    </div>
+    <!-- Button -->
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="singlebutton"></label>
+        <div class="col-md-1">
+            <a href="${pageContext.servletContext.contextPath}/" class="btn btn-link" role="button">View users and roles</a>
+        </div>
+    </div>
 </form>
-<br/>
-<a href="${pageContext.servletContext.contextPath}/">View All Users</a>
+
 </body>
 </html>

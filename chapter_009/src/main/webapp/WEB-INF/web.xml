@@ -53,6 +53,12 @@
         <servlet-class>ru.job4j.servlet.controller.DeleteRoleServlet</servlet-class>
         <load-on-startup>0</load-on-startup>
     </servlet>
+    <servlet>
+        <servlet-name>JsonServlet</servlet-name>
+        <servlet-class>ru.job4j.servlet.controller.JsonServlet</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+
     <filter>
         <filter-name>AuthFilter</filter-name>
         <filter-class>ru.job4j.servlet.controller.AuthFilter</filter-class>
@@ -102,6 +108,10 @@
     <servlet-mapping>
         <servlet-name>Delete Role</servlet-name>
         <url-pattern>/deleteRole</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>JsonServlet</servlet-name>
+        <url-pattern>/JsonServlet</url-pattern>
     </servlet-mapping>
     <filter-mapping>
         <filter-name>AuthFilter</filter-name>

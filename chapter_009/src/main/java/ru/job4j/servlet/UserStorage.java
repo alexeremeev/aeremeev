@@ -1,13 +1,12 @@
 package ru.job4j.servlet;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import ru.job4j.servlet.model.Address;
 import ru.job4j.servlet.model.Role;
 import ru.job4j.servlet.model.User;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * class UserStorage - хранилище User, взаимодействующее с SQL БД.
@@ -34,7 +33,10 @@ public class UserStorage {
         dataSource.setMinIdle(5);
         dataSource.setMaxIdle(20);
         dataSource.setMaxOpenPreparedStatements(180);
-        List<String> initSQLs = new ArrayList<>(Arrays.asList(this.settings.getSettings("SQL_CREATE_ROLES"),
+        List<String> initSQLs = new ArrayList<>(Arrays.asList(this.settings.getSettings("SQL_CREATE_COUNTRIES"),
+                this.settings.getSettings("SQL_CREATE_CITIES"),
+                this.settings.getSettings("SQL_CREATE_ADDRESS"),
+                this.settings.getSettings("SQL_CREATE_ROLES"),
                 this.settings.getSettings("SQL_CREATE_TABLE")));
         dataSource.setConnectionInitSqls(initSQLs);
     }
@@ -61,6 +63,17 @@ public class UserStorage {
     }
 
     /**
+     * Close connections pool.
+     */
+    public void close() {
+        try {
+            this.dataSource.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Загрузчик settings.
      */
     private Settings settings = new Settings("userstore.properties");
@@ -74,7 +87,8 @@ public class UserStorage {
         boolean result = false;
         String query = this.settings.getSettings("SQL_ADD_USER");
         Object[] fields = new Object[] {user.getName(), user.getLogin(), user.getEmail(),
-                new Timestamp(user.getCreateDate()), user.getPassword(), user.getRole().getId()};
+                new Timestamp(user.getCreateDate()), user.getPassword(), user.getRole().getId(),
+                user.getAddress().getCityId()};
         if (this.executeWithArgs(query, fields) > 0) {
             result = true;
         }
@@ -128,7 +142,8 @@ public class UserStorage {
     public boolean updateUser(User user) {
         boolean result = false;
         String query = this.settings.getSettings("SQL_UPDATE_USER");
-        Object[] fields = new Object[] {user.getName(), user.getEmail(), user.getPassword(), user.getRole().getId(), user.getLogin()};
+        Object[] fields = new Object[] {user.getName(), user.getEmail(), user.getPassword(),
+                user.getRole().getId(), user.getAddress().getCityId(), user.getLogin()};
         if (this.executeWithArgs(query, fields) > 0) {
             result = true;
         }
@@ -213,6 +228,67 @@ public class UserStorage {
     }
 
     /**
+     * Получить список всех стран.
+     * @return список всех стран.
+     */
+    public Map<Integer, String> getCountries() {
+        Map<Integer, String> result = new HashMap<>();
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            connection = UserStorage.getInstance().getConnection();
+            ps = connection.prepareStatement("SELECT * FROM COUNTRIES");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                result.put(rs.getInt(1), rs.getString(2));
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            this.closeStatement(ps);
+            this.closeResult(rs);
+        }
+        this.endConnection(connection);
+        return result;
+    }
+
+    /**
+     * Получить список всех городов по ID страны.
+     * @param countryId ID страны.
+     * @return список всех городов по ID страны.
+     */
+    public Map<Integer, String> getCities(int countryId) {
+        Map<Integer, String> result = new HashMap<>();
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            connection = UserStorage.getInstance().getConnection();
+            connection.setAutoCommit(false);
+            ps = connection.prepareStatement("select id, name from cities where country_id = ?");
+            ps.setInt(1, countryId);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                result.put(rs.getInt(1), rs.getString(2));
+            }
+            connection.commit();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } finally {
+            this.closeStatement(ps);
+            this.closeResult(rs);
+        }
+        this.endConnection(connection);
+        return result;
+    }
+
+    /**
      * Проверка существования пользователя с парой login / password в БД.
      * @param login login.
      * @param password password.
@@ -233,9 +309,47 @@ public class UserStorage {
      * Если отсутствует, то создается новая.
      */
     public void checkTable() {
-        this.execute(this.settings.getSettings("SQL_ADD_ADMIN_ROLE"));
-        this.execute(this.settings.getSettings("SQL_ADD_USER_ROLE"));
-        this.execute(this.settings.getSettings("SQL_ADD_ADMIN"));
+        if ((this.select(this.settings.getSettings("SQL_CHECK_COUNTRIES")) == 0)) {
+            String[] queries = new String[] {"insert into countries (name) values ('Russia')",
+                    "insert into countries (name) values ('Ukraine')",
+                    "insert into countries (name) values ('Belarus')",
+                    "insert into countries (name) values ('Kazakhstan')"};
+            this.executeBatch(queries);
+        }
+        if ((this.select(this.settings.getSettings("SQL_CHECK_CITIES")) == 0)) {
+            String[] queries = new String[] {"insert into cities (name, country_id) values ('Moscow', 1)",
+                    "insert into cities (name, country_id) values ('Saint-Petersburg', 1)",
+                    "insert into cities (name, country_id) values ('Smolensk', 1)",
+                    "insert into cities (name, country_id) values ('Bryansk', 1)",
+                    "insert into cities (name, country_id) values ('Vladivostok', 1)",
+                    "insert into cities (name, country_id) values ('Kiev', 2)",
+                    "insert into cities (name, country_id) values ('Lviv', 2)",
+                    "insert into cities (name, country_id) values ('Odessa', 2)",
+                    "insert into cities (name, country_id) values ('Donetsk', 2)",
+                    "insert into cities (name, country_id) values ('Kharkiv', 2)",
+                    "insert into cities (name, country_id) values ('Minsk', 3)",
+                    "insert into cities (name, country_id) values ('Brest', 3)",
+                    "insert into cities (name, country_id) values ('Mogilev', 3)",
+                    "insert into cities (name, country_id) values ('Korbin', 3)",
+                    "insert into cities (name, country_id) values ('Borisov', 3)",
+                    "insert into cities (name, country_id) values ('Astana', 4)",
+                    "insert into cities (name, country_id) values ('Almaty', 4)",
+                    "insert into cities (name, country_id) values ('Atyrau', 4)",
+                    "insert into cities (name, country_id) values ('Aktobe', 4)",
+                    "insert into cities (name, country_id) values ('Shalkar', 4)"};
+            this.executeBatch(queries);
+        }
+        if ((this.select(this.settings.getSettings("SQL_CHECK_ADDRESS")) == 0)) {
+            this.execute("INSERT INTO ADDRESS (COUNTRY_ID, CITY_ID) SELECT COUNTRY_ID, ID FROM CITIES WHERE ID <>0");
+        }
+
+        if (this.select(this.settings.getSettings("SQL_CHECK_ROLES")) == 0) {
+            this.execute(this.settings.getSettings("SQL_ADD_ADMIN_ROLE"));
+            this.execute(this.settings.getSettings("SQL_ADD_USER_ROLE"));
+        }
+        if (this.select(this.settings.getSettings("SQL_CHECK_USERS")) == 0) {
+            this.execute(this.settings.getSettings("SQL_ADD_ADMIN"));
+        }
     }
 
     /**
@@ -257,6 +371,33 @@ public class UserStorage {
                 sqle.printStackTrace();
             }
         }
+    }
+    /**
+     * Выполняет запросы SELECT в БД.
+     * @param query sql запрос.
+     * @return значение первой колонки.
+     */
+    private int select(String query) {
+        Connection connection = null;
+        int result = 0;
+
+        Statement st = null;
+        ResultSet rs = null;
+        try {
+            connection = UserStorage.getInstance().getConnection();
+            st = connection.createStatement();
+            rs = st.executeQuery(query);
+            if (rs.next()) {
+                result = rs.getInt(1);
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            this.closeResult(rs);
+            this.closeStatement(st);
+        }
+        this.endConnection(connection);
+        return result;
     }
     /**
      * Исполняет запросы Create к SQL БД.
@@ -325,6 +466,31 @@ public class UserStorage {
         this.endConnection(connection);
         return result;
     }
+
+    private void executeBatch(String[] queries) {
+        Connection connection = null;
+        Statement st = null;
+        try {
+            connection = UserStorage.getInstance().getConnection();
+            connection.setAutoCommit(false);
+            st = connection.createStatement();
+            for (int i = 0; i < queries.length; i++) {
+                st.addBatch(queries[i]);
+            }
+            st.executeBatch();
+            connection.commit();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                this.closeStatement(st);
+            }
+            this.endConnection(connection);
+        }
+    }
     /**
      * Возвращает список User, ограниченный полем fields.
      * @param query запрос.
@@ -348,6 +514,12 @@ public class UserStorage {
                 role.setId(rs.getInt(7));
                 role.setAdmin(rs.getBoolean(8));
                 user.setRole(role);
+                Address address = new Address();
+                address.setCountryId(rs.getInt(9));
+                address.setCountry(rs.getString(10));
+                address.setCityId(rs.getInt(11));
+                address.setCity(rs.getString(12));
+                user.setAddress(address);
                 users.add(user);
             }
         } catch (SQLException sqle) {

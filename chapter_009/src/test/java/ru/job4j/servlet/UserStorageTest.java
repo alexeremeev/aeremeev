@@ -2,12 +2,14 @@ package ru.job4j.servlet;
 
 import org.junit.Before;
 import org.junit.Test;
+import ru.job4j.servlet.model.Address;
 import ru.job4j.servlet.model.Role;
 import ru.job4j.servlet.model.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -35,6 +37,9 @@ public class UserStorageTest {
     public void whenAddUserThenReceiveUser() {
         User user = new User("User", "Login", "user@example.com", System.currentTimeMillis(), "user");
         Role role = new Role("user");
+        Address address = new Address();
+        address.setCityId(1);
+        user.setAddress(address);
         role.setId(2);
         role.setAdmin(false);
         user.setRole(role);
@@ -52,10 +57,16 @@ public class UserStorageTest {
         role.setId(2);
         role.setAdmin(false);
         user.setRole(role);
+        Address address = new Address();
+        address.setCityId(1);
+        user.setAddress(address);
         users.addUser(user);
 
         User updated = new User("Update User", "Login", "newmail@example.com", user.getCreateDate(), "user");
         updated.setRole(role);
+        Address updAddres = new Address();
+        updAddres.setCityId(12);
+        updated.setAddress(updAddres);
         users.updateUser(updated);
 
         assertThat(users.getUsers().get(1), is(updated));
@@ -71,6 +82,9 @@ public class UserStorageTest {
         role.setId(2);
         role.setAdmin(false);
         user.setRole(role);
+        Address address = new Address();
+        address.setCityId(1);
+        user.setAddress(address);
         users.addUser(user);
 
         users.deleteUser(user);
@@ -89,6 +103,9 @@ public class UserStorageTest {
         role.setId(2);
         role.setAdmin(false);
         user.setRole(role);
+        Address address = new Address();
+        address.setCityId(1);
+        user.setAddress(address);
         users.addUser(user);
 
         assertThat(users.findByLogin("Login"), is(user));
@@ -106,9 +123,16 @@ public class UserStorageTest {
         Role role = new Role("user");
         role.setId(2);
         role.setAdmin(false);
+        Address address = new Address();
+        address.setCityId(1);
+
         first.setRole(role);
         second.setRole(role);
         third.setRole(role);
+
+        first.setAddress(address);
+        second.setAddress(address);
+        third.setAddress(address);
 
 
         users.addUser(first);
@@ -198,6 +222,25 @@ public class UserStorageTest {
 
         assertThat(users.findRole(role.getId()), is(role));
     }
+
+    @Test
+    public void getCountries() {
+        Map<Integer, String> countries = users.getCountries();
+        System.out.println(countries);
+    }
+
+    @Test
+    public void getAllCities() {
+        Map<Integer, String> russia = users.getCities(1);
+        System.out.println(russia);
+        Map<Integer, String> ukraine = users.getCities(2);
+        System.out.println(ukraine);
+        Map<Integer, String> belarus = users.getCities(3);
+        System.out.println(belarus);
+        Map<Integer, String> kazakhstan = users.getCities(4);
+        System.out.println(kazakhstan);
+    }
+
 
 
 }

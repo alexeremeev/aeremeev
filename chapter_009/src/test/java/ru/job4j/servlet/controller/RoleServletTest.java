@@ -43,13 +43,13 @@ public class RoleServletTest {
         CreateRoleServlet servlet = new CreateRoleServlet();
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
-        when(request.getParameter("name")).thenReturn("xyz test");
+        when(request.getParameter("name")).thenReturn("test");
         when(request.getParameter("admin")).thenReturn("admin");
         servlet.doPost(request, response);
 
         List<Role> list = users.getRoles();
 
-        assertThat(list.get(2).getName(), is("xyz test"));
+        assertThat(list.get(2).getName(), is("test"));
     }
 
     /**

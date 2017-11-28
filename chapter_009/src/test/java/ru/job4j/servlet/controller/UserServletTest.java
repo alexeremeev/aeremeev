@@ -49,6 +49,7 @@ public class UserServletTest {
         when(request.getParameter("email")).thenReturn("user@user");
         when(request.getParameter("password")).thenReturn("user");
         when(request.getParameter("role")).thenReturn("2");
+        when(request.getParameter("city")).thenReturn("1");
         servlet.doPost(request, response);
         List<User> list = users.getUsers();
         assertThat(list.get(1).getLogin(), is("user"));
@@ -72,6 +73,7 @@ public class UserServletTest {
         when(request.getParameter("email")).thenReturn("admin@admin");
         when(request.getParameter("password")).thenReturn("admin");
         when(request.getParameter("role")).thenReturn("1");
+        when(request.getParameter("city")).thenReturn("1");
         servlet.doPost(request, response);
         List<User> list = users.getUsers();
         assertThat(list.get(0).getName(), is("updated"));

@@ -30,6 +30,10 @@ public class User {
      * Роль пользователя.
      */
     private Role role;
+    /**
+     * Адрес пользователя.
+     */
+    private Address address;
 
     /**
      * Конструктор.
@@ -103,13 +107,27 @@ public class User {
         this.role = role;
     }
 
-    @Override
-    public String toString() {
-        return String.format("Name: %s | Login: %s | E-mail: %s | Created: %s",
-                this.getName(), this.getLogin(), this.getEmail(), new Timestamp(this.getCreateDate()));
+    /**
+     * Геттер адреса.
+     * @return адрес.
+     */
+    public Address getAddress() {
+        return address;
     }
 
+    /**
+     * Сеттер адреса.
+     * @param address адрес.
+     */
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
+    @Override
+    public String toString() {
+        return String.format("Name: %s | Login: %s | E-mail: %s | Created: %s | City: %s",
+                this.getName(), this.getLogin(), this.getEmail(), new Timestamp(this.getCreateDate()), this.getAddress().getCity());
+    }
 
     @Override
     public boolean equals(Object o) {
