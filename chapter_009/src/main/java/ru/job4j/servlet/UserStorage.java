@@ -237,11 +237,11 @@ public class UserStorage {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            connection = UserStorage.getInstance().getConnection();
+            connection = this.getConnection();
             ps = connection.prepareStatement("SELECT * FROM COUNTRIES");
             rs = ps.executeQuery();
             while (rs.next()) {
-                result.put(rs.getInt(1), rs.getString(2));
+                result.put(rs.getInt("id"), rs.getString("name"));
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -264,13 +264,13 @@ public class UserStorage {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            connection = UserStorage.getInstance().getConnection();
+            connection = this.getConnection();
             connection.setAutoCommit(false);
             ps = connection.prepareStatement("select id, name from cities where country_id = ?");
             ps.setInt(1, countryId);
             rs = ps.executeQuery();
             while (rs.next()) {
-                result.put(rs.getInt(1), rs.getString(2));
+                result.put(rs.getInt("id"), rs.getString("name"));
             }
             connection.commit();
         } catch (SQLException sqle) {
@@ -297,7 +297,7 @@ public class UserStorage {
     public User isCredential(String login, String password) {
         this.checkTable();
         User exist = null;
-        User find = UserStorage.getInstance().findByLogin(login);
+        User find = this.findByLogin(login);
         if (find != null && find.getLogin().equals(login) && find.getPassword().equals(password)) {
             exist = find;
         }
@@ -384,7 +384,7 @@ public class UserStorage {
         Statement st = null;
         ResultSet rs = null;
         try {
-            connection = UserStorage.getInstance().getConnection();
+            connection = this.getConnection();
             st = connection.createStatement();
             rs = st.executeQuery(query);
             if (rs.next()) {
@@ -409,7 +409,7 @@ public class UserStorage {
         int result = 0;
         Statement st = null;
         try {
-            connection = UserStorage.getInstance().getConnection();
+            connection = this.getConnection();
             connection.setAutoCommit(false);
             st = connection.createStatement();
             result = st.executeUpdate(query);
@@ -439,7 +439,7 @@ public class UserStorage {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            connection = UserStorage.getInstance().getConnection();
+            connection = this.getConnection();
             connection.setAutoCommit(false);
             ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             for (int i = 0; i < fields.length; i++) {
@@ -471,7 +471,7 @@ public class UserStorage {
         Connection connection = null;
         Statement st = null;
         try {
-            connection = UserStorage.getInstance().getConnection();
+            connection = this.getConnection();
             connection.setAutoCommit(false);
             st = connection.createStatement();
             for (int i = 0; i < queries.length; i++) {
@@ -503,7 +503,7 @@ public class UserStorage {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            connection = UserStorage.getInstance().getConnection();
+            connection = this.getConnection();
             ps = connection.prepareStatement(query);
             ps.setObject(1, fields[0]);
             rs = ps.executeQuery();
@@ -541,7 +541,7 @@ public class UserStorage {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            connection = UserStorage.getInstance().getConnection();
+            connection = this.getConnection();
             ps = connection.prepareStatement(query);
             ps.setObject(1, fields[0]);
             rs = ps.executeQuery();
