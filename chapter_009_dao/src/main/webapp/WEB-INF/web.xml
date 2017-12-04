@@ -1,0 +1,66 @@
+<web-app>
+    <servlet>
+        <servlet-name>Login Servlet</servlet-name>
+        <servlet-class>ru.job4j.control.controllers.LoginController</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>Logout Servlet</servlet-name>
+        <servlet-class>ru.job4j.control.controllers.LogoutController</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>Repository Controller</servlet-name>
+        <servlet-class>ru.job4j.control.controllers.RepositoryController</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>Create User Servlet</servlet-name>
+        <servlet-class>ru.job4j.control.controllers.Create</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>Main View Servlet</servlet-name>
+        <servlet-class>ru.job4j.control.controllers.MainViewController</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+
+    <filter>
+        <filter-name>Auth Filter</filter-name>
+        <filter-class>ru.job4j.control.controllers.Auth</filter-class>
+    </filter>
+
+    <servlet-mapping>
+        <servlet-name>Login Servlet</servlet-name>
+        <url-pattern>/auth</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Logout Servlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Repository Controller</servlet-name>
+        <url-pattern>/json</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Create User Servlet</servlet-name>
+        <url-pattern>/create</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Main View Servlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <filter-mapping>
+        <filter-name>Auth Filter</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
+</web-app>
