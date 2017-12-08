@@ -139,5 +139,6 @@
     <module>chapter_008</module>
     <module>chapter_009</module>
     <module>chapter_009_dao</module>
+    <module>control_tasks</module>
 </modules>
 </project>
