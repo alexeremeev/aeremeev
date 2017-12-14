@@ -12,20 +12,26 @@ import java.util.Set;
 /**
  * class MusicTypeDAO - реализация DAO для модели MusicType.
  */
-public class MusicTypeDAO {
-
-    private final static Logger LOGGER = Logger.getLogger(MusicTypeDAO.class);
-    /**
-     * Пул коннетов к БД.
-     */
-    private PSQLpool pool;
+public class MusicTypeDAO extends BasicDAO{
 
     /**
      * Конструктор.
      * @param pool пул коннектов к БД.
      */
     public MusicTypeDAO(PSQLpool pool) {
-        this.pool = pool;
+        super(pool);
+    }
+
+    @Override
+    protected List<MusicType> parseResultSet(ResultSet rs) throws SQLException {
+        List<MusicType> result = new ArrayList<>();
+        while (rs.next()) {
+            MusicType musicType = new MusicType();
+            musicType.setId(rs.getInt("id"));
+            musicType.setName(rs.getString("name"));
+            result.add(musicType);
+        }
+        return result;
     }
 
     /**
@@ -34,42 +40,9 @@ public class MusicTypeDAO {
      * @return ID созданной строки в БД.
      */
     public int createMusicType(MusicType musicType) {
-        int result = 0;
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            connection = this.pool.getConnection();
-            connection.setAutoCommit(false);
-            ps = connection.prepareStatement("INSERT INTO MUSICTYPES (NAME) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, musicType.getName());
-            ps.executeUpdate();
-            rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                result = rs.getInt(1);
-            }
-            connection.commit();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-            result = 0;
-            try {
-                connection.rollback();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return result;
+        String query = "INSERT INTO MUSICTYPES (NAME) VALUES (?)";
+        Object[] fields = new Object[] {musicType.getName()};
+        return super.create(fields, query);
     }
 
     /**
@@ -78,37 +51,8 @@ public class MusicTypeDAO {
      * @return true, если удален.
      */
     public boolean deleteMusicType(int id) {
-        boolean result = false;
-        Connection connection = null;
-        PreparedStatement ps = null;
-
-        try {
-            connection = this.pool.getConnection();
-            connection.setAutoCommit(false);
-            ps = connection.prepareStatement("DELETE FROM MUSICTYPES WHERE ID = ?");
-            ps.setInt(1, id);
-            ps.executeUpdate();
-            result = true;
-            connection.commit();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-            result = false;
-            try {
-                connection.rollback();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } finally {
-            try {
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return result;
+        String query = "DELETE FROM MUSICTYPES WHERE ID = ?";
+        return super.delete(id, query);
     }
 
     /**
@@ -117,38 +61,9 @@ public class MusicTypeDAO {
      * @return true, если обновлен.
      */
     public boolean updateMusicType(MusicType musicType) {
-        boolean result = false;
-        Connection connection = null;
-        PreparedStatement ps = null;
-
-        try {
-            connection = this.pool.getConnection();
-            connection.setAutoCommit(false);
-            ps = connection.prepareStatement("UPDATE MUSICTYPES SET name = ? WHERE id = ?");
-            ps.setString(1, musicType.getName());
-            ps.setInt(2, musicType.getId());
-            ps.executeUpdate();
-            result = true;
-            connection.commit();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-            result = false;
-            try {
-                connection.rollback();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } finally {
-            try {
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return result;
+        String query = "UPDATE MUSICTYPES SET name = ? WHERE id = ?";
+        Object[] fields = new Object[] {musicType.getName(), musicType.getId()};
+        return super.update(fields, query);
     }
 
     /**
@@ -156,34 +71,9 @@ public class MusicTypeDAO {
      * @return список всех музыкальных стилей.
      */
     public List<MusicType> getAll() {
-        Connection connection = null;
-        List<MusicType> result = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            connection = this.pool.getConnection();
-            ps = connection.prepareStatement("SELECT * FROM MUSICTYPES");
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                MusicType musicType = new MusicType();
-                musicType.setId(rs.getInt(1));
-                musicType.setName(rs.getString(2));
-                result.add(musicType);
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return result;
+        String query = "SELECT * FROM MUSICTYPES WHERE ID <> ?";
+        Object[] fields = new Object[] {0};
+        return super.getAll(fields, query);
     }
 
     /**
@@ -192,34 +82,10 @@ public class MusicTypeDAO {
      * @return адрес, если найден, иначе null.
      */
     public MusicType findMusicTypeById(int id) {
-        MusicType result = null;
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            connection = this.pool.getConnection();
-            ps = connection.prepareStatement("SELECT * FROM MUSICTYPES WHERE ID = ?");
-            ps.setInt(1, id);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                result = new MusicType();
-                result.setId(rs.getInt(1));
-                result.setName(rs.getString(2));
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return result;
+        String query = "SELECT * FROM MUSICTYPES WHERE ID = ?";
+        Object[] fields = new Object[] {id};
+        List<MusicType> result = super.getAll(fields, query);
+        return result.isEmpty() ? null : result.get(0);
     }
 
     /**
@@ -228,34 +94,10 @@ public class MusicTypeDAO {
      * @return адрес, если найден, иначе null.
      */
     public MusicType findMusicTypeByName(String name) {
-        MusicType result = null;
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            connection = this.pool.getConnection();
-            ps = connection.prepareStatement("SELECT * FROM MUSICTYPES WHERE NAME = ?");
-            ps.setString(1, name);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                result = new MusicType();
-                result.setId(rs.getInt(1));
-                result.setName(rs.getString(2));
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return result;
+        String query = "SELECT * FROM MUSICTYPES WHERE NAME = ?";
+        Object[] fields = new Object[] {name};
+        List<MusicType> result = super.getAll(fields, query);
+        return result.isEmpty() ? null : result.get(0);
     }
 
     /**
@@ -263,84 +105,24 @@ public class MusicTypeDAO {
      */
     public void fillMusicType() {
         String[] types = new String[] {"Pop", "Rock", "Rap", "R-n-B", "Jazz", "Funk", "Classic"};
-        Connection connection = null;
-        PreparedStatement ps = null;
-
-        try {
-            connection = this.pool.getConnection();
-            connection.setAutoCommit(false);
-            ps = connection.prepareStatement("INSERT INTO MUSICTYPES (NAME) VALUES (?)");
-            for (String type : types) {
-                ps.setString(1, type);
-                ps.addBatch();
-            }
-            ps.executeBatch();
-            connection.commit();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-            try {
-                connection.rollback();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } finally {
-            try {
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
+        String query = "INSERT INTO MUSICTYPES (NAME) VALUES (?)";
+        super.fill(types, query);
     }
 
     /**
      * Сбросить таблицу.
      */
     public void clearTable() {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        try {
-            connection = this.pool.getConnection();
-            ps = connection.prepareStatement("TRUNCATE TABLE MUSICTYPES RESTART IDENTITY CASCADE");
-            ps.execute();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-        } finally {
-            try {
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
+        String query = "TRUNCATE TABLE MUSICTYPES RESTART IDENTITY CASCADE";
+        super.clearTable(query);
     }
 
     /**
      * Сбросить таблицу пользовательских предпочтений.
      */
     public void clearTableUserMusicTypes() {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        try {
-            connection = this.pool.getConnection();
-            ps = connection.prepareStatement("TRUNCATE TABLE USER_MUSICTYPES RESTART IDENTITY CASCADE");
-            ps.execute();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-        } finally {
-            try {
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
+        String query = "TRUNCATE TABLE USER_MUSICTYPES RESTART IDENTITY CASCADE";
+        super.clearTable(query);
     }
 
     /**
@@ -352,7 +134,7 @@ public class MusicTypeDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            connection = this.pool.getConnection();
+            connection = super.pool.getConnection();
             ps = connection.prepareStatement("SELECT * FROM USER_MUSICTYPES WHERE USER_ID = ?");
             ps.setInt(1, id);
             rs = ps.executeQuery();
@@ -361,7 +143,6 @@ public class MusicTypeDAO {
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
         } finally {
             try {
                 rs.close();
@@ -369,7 +150,6 @@ public class MusicTypeDAO {
                 connection.close();
             } catch (Exception e) {
                 e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
             }
         }
         return result;

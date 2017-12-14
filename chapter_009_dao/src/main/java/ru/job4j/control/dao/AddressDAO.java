@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * сlass AddressDAO - реализация DAO для модели Address.
  */
-public class AddressDAO {
+public class AddressDAO extends BasicDAO {
 
     private final static Logger LOGGER = Logger.getLogger(AddressDAO.class);
     /**
@@ -23,7 +23,19 @@ public class AddressDAO {
      * @param pool пул коннектов к БД.
      */
     public AddressDAO(PSQLpool pool) {
-        this.pool = pool;
+        super(pool);
+    }
+
+    @Override
+    protected List<Address> parseResultSet(ResultSet rs) throws SQLException {
+        List<Address> result = new ArrayList<>();
+        while (rs.next()) {
+            Address address = new Address();
+            address.setId(rs.getInt("id"));
+            address.setName(rs.getString("name"));
+            result.add(address);
+        }
+        return result;
     }
 
     /**
@@ -32,42 +44,9 @@ public class AddressDAO {
      * @return ID созданной строки в БД.
      */
     public int createAddress(Address address) {
-        int result = 0;
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            connection = this.pool.getConnection();
-            connection.setAutoCommit(false);
-            ps = connection.prepareStatement("INSERT INTO ADDRESS (NAME) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, address.getName());
-            ps.executeUpdate();
-            rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                result = rs.getInt(1);
-            }
-            connection.commit();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-            result = 0;
-            try {
-                connection.rollback();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return result;
+        String query = "INSERT INTO ADDRESS (NAME) VALUES (?)";
+        Object[] fields = new Object[] {address.getName()};
+        return super.create(fields, query);
     }
 
     /**
@@ -76,37 +55,8 @@ public class AddressDAO {
      * @return true, если удален.
      */
     public boolean deleteAddress(int id) {
-        boolean result = false;
-        Connection connection = null;
-        PreparedStatement ps = null;
-
-        try {
-            connection = this.pool.getConnection();
-            connection.setAutoCommit(false);
-            ps = connection.prepareStatement("DELETE FROM ADDRESS WHERE ID = ?");
-            ps.setInt(1, id);
-            ps.executeUpdate();
-            result = true;
-            connection.commit();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-            result = false;
-            try {
-                connection.rollback();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } finally {
-            try {
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return result;
+        String query = "DELETE FROM ADDRESS WHERE ID = ?";
+        return super.delete(id, query);
     }
 
     /**
@@ -115,38 +65,9 @@ public class AddressDAO {
      * @return true, если обновлен.
      */
     public boolean updateAddress(Address address) {
-        boolean result = false;
-        Connection connection = null;
-        PreparedStatement ps = null;
-
-        try {
-            connection = this.pool.getConnection();
-            connection.setAutoCommit(false);
-            ps = connection.prepareStatement("UPDATE address SET name = ? WHERE id = ?");
-            ps.setString(1, address.getName());
-            ps.setInt(2, address.getId());
-            ps.executeUpdate();
-            result = true;
-            connection.commit();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-            result = false;
-            try {
-                connection.rollback();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } finally {
-            try {
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return result;
+        String query = "UPDATE address SET name = ? WHERE id = ?";
+        Object[] fields = new Object[] {address.getName(), address.getId()};
+        return super.update(fields, query);
     }
 
     /**
@@ -154,35 +75,9 @@ public class AddressDAO {
      * @return список всех адресов.
      */
     public List<Address> getAll() {
-
-        Connection connection = null;
-        List<Address> result = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            connection = this.pool.getConnection();
-            ps = connection.prepareStatement("SELECT * FROM ADDRESS");
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                Address address = new Address();
-                address.setId(rs.getInt(1));
-                address.setName(rs.getString(2));
-                result.add(address);
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return result;
+        String query = "SELECT * FROM ADDRESS WHERE ID <> ?";
+        Object[] fields = new Object[] {0};
+        return super.getAll(fields, query);
     }
 
     /**
@@ -191,34 +86,10 @@ public class AddressDAO {
      * @return адрес, если найден, иначе null.
      */
     public Address findAddressById(int id) {
-        Address result = null;
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            connection = this.pool.getConnection();
-            ps = connection.prepareStatement("SELECT * FROM ADDRESS WHERE ID = ?");
-            ps.setInt(1, id);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                result = new Address();
-                result.setId(rs.getInt(1));
-                result.setName(rs.getString(2));
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return result;
+        String query = "SELECT * FROM ADDRESS WHERE ID = ?";
+        Object[] fields = new Object[] {id};
+        List<Address> result = super.getAll(fields, query);
+        return result.isEmpty() ? null : result.get(0);
     }
     /**
      * Найти адрес по названию.
@@ -226,57 +97,17 @@ public class AddressDAO {
      * @return адрес, если найден, иначе null.
      */
     public Address findAddressByName(String name) {
-        Address result = null;
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            connection = this.pool.getConnection();
-            ps = connection.prepareStatement("SELECT * FROM ADDRESS WHERE NAME = ?");
-            ps.setString(1, name);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                result = new Address();
-                result.setId(rs.getInt(1));
-                result.setName(rs.getString(2));
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return result;
+        String query = "SELECT * FROM ADDRESS WHERE NAME = ?";
+        Object[] fields = new Object[] {name};
+        List<Address> result = super.getAll(fields, query);
+        return result.isEmpty() ? null : result.get(0);
     }
 
     /**
      * Сбросить таблицу.
      */
     public void clearTable() {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        try {
-            connection = this.pool.getConnection();
-            ps = connection.prepareStatement("TRUNCATE TABLE ADDRESS RESTART IDENTITY CASCADE");
-            ps.execute();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-        } finally {
-            try {
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
+        String query = "TRUNCATE TABLE ADDRESS RESTART IDENTITY CASCADE";
+        super.clearTable(query);
     }
 }

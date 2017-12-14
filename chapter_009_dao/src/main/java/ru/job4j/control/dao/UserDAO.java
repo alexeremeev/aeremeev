@@ -12,20 +12,29 @@ import java.util.Set;
  * сlass UserDAO - реализация DAO для модели User.
  */
 
-public class UserDAO {
-
-    private final static Logger LOGGER = Logger.getLogger(UserDAO.class);
-    /**
-     * Пул коннетов к БД.
-     */
-    private PSQLpool pool;
-
+public class UserDAO extends BasicDAO {
     /**
      * Конструктор.
      * @param pool пул коннектов к БД.
      */
     public UserDAO(PSQLpool pool) {
-        this.pool = pool;
+        super(pool);
+    }
+
+    @Override
+    protected List<User> parseResultSet(ResultSet rs) throws SQLException {
+        List<User> result = new ArrayList<>();
+        while (rs.next()) {
+            User user = new User();
+            user.setId(rs.getInt("id"));
+            user.setName(rs.getString("name"));
+            user.setPassword(rs.getString("password"));
+            user.setRoleId(rs.getInt("role_id"));
+            user.setAddressId(rs.getInt("address_id"));
+            this.fillMusicTypes(user);
+            result.add(user);
+        }
+        return result;
     }
 
     /**
@@ -34,45 +43,12 @@ public class UserDAO {
      * @return ID созданной строки в БД.
      */
     public int createUser(User user) {
-        int result = 0;
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            connection = this.pool.getConnection();
-            connection.setAutoCommit(false);
-            ps = connection.prepareStatement("INSERT INTO USERS (NAME, PASSWORD, ROLE_ID, ADDRESS_ID) VALUES (?, ?, ? ,?)", Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, user.getName());
-            ps.setString(2, user.getPassword());
-            ps.setInt(3, user.getRoleId());
-            ps.setInt(4, user.getAddressId());
-            ps.executeUpdate();
-            rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                result = rs.getInt(1);
-                user.setId(result);
-                this.setMusicType(user);
-            }
-            connection.commit();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-            result = 0;
-            try {
-                connection.rollback();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
+        String query = "INSERT INTO USERS (NAME, PASSWORD, ROLE_ID, ADDRESS_ID) VALUES (?, ?, ? ,?)";
+        Object[] fields = new Object[] {user.getName(), user.getPassword(), user.getRoleId(), user.getAddressId()};
+        int result = super.create(fields, query);
+        if (result != 0) {
+            user.setId(result);
+            this.setMusicType(user);
         }
         return result;
     }
@@ -83,37 +59,11 @@ public class UserDAO {
      * @return true, если удален.
      */
     public boolean deleteUser(int id) {
+        String query = "DELETE FROM USERS WHERE ID = ?";
         boolean result = false;
-        Connection connection = null;
-        PreparedStatement ps = null;
-        try {
-            connection = this.pool.getConnection();
-            connection.setAutoCommit(false);
-            ps = connection.prepareStatement("DELETE FROM USERS WHERE ID = ?");
-            ps.setInt(1, id);
-            ps.executeUpdate();
-            result = true;
-            ps = connection.prepareStatement("DELETE FROM USER_MUSICTYPES WHERE user_id = ?");
-            ps.setInt(1, id);
-            ps.executeUpdate();
-            connection.commit();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-            result = false;
-            try {
-                connection.rollback();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } finally {
-            try {
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
+        if (super.delete(id, query)) {
+            query = "DELETE FROM USER_MUSICTYPES WHERE user_id = ?";
+            result = super.delete(id, query);
         }
         return result;
     }
@@ -124,40 +74,11 @@ public class UserDAO {
      * @return true, если обновлен.
      */
     public boolean updateUser(User user) {
-        boolean result = false;
-        Connection connection = null;
-        PreparedStatement ps = null;
-
-        try {
-            connection = this.pool.getConnection();
-            connection.setAutoCommit(false);
-            ps = connection.prepareStatement("UPDATE USERS SET NAME = ?, PASSWORD = ?, ROLE_ID = ?, ADDRESS_ID = ? WHERE ID = ?");
-            ps.setString(1, user.getName());
-            ps.setString(2, user.getPassword());
-            ps.setInt(3, user.getRoleId());
-            ps.setInt(4, user.getAddressId());
-            ps.setInt(5, user.getId());
-            ps.executeUpdate();
+        String query = "UPDATE USERS SET NAME = ?, PASSWORD = ?, ROLE_ID = ?, ADDRESS_ID = ? WHERE ID = ?";
+        Object[] fields = new Object[] {user.getName(), user.getPassword(), user.getRoleId(), user.getAddressId(), user.getId()};
+        boolean result = super.update(fields, query);
+        if (result) {
             this.setMusicType(user);
-            result = true;
-            connection.commit();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-            result = false;
-            try {
-                connection.rollback();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } finally {
-            try {
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
         }
         return result;
     }
@@ -167,38 +88,9 @@ public class UserDAO {
      * @return список всех пользователей.
      */
     public List<User> getAll() {
-        Connection connection = null;
-        List<User> result = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            connection = this.pool.getConnection();
-            ps = connection.prepareStatement("SELECT * FROM USERS");
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                User user = new User();
-                user.setId(rs.getInt(1));
-                user.setName(rs.getString(2));
-                user.setPassword(rs.getString(3));
-                user.setRoleId(rs.getInt(4));
-                user.setAddressId(rs.getInt(5));
-                this.fillMusicTypes(user);
-                result.add(user);
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return result;
+        String query = "SELECT * FROM USERS WHERE ID <> ?";
+        Object[] fields = new Object[] {0};
+        return super.getAll(fields, query);
     }
 
     /**
@@ -207,38 +99,10 @@ public class UserDAO {
      * @return пользователь, если найден, иначе null.
      */
     public User findUserById(int id) {
-        User result = null;
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            connection = this.pool.getConnection();
-            ps = connection.prepareStatement("SELECT * FROM USERS WHERE ID = ?");
-            ps.setInt(1, id);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                result = new User();
-                result.setId(rs.getInt(1));
-                result.setName(rs.getString(2));
-                result.setPassword(rs.getString(3));
-                result.setRoleId(rs.getInt(4));
-                result.setAddressId(rs.getInt(5));
-                this.fillMusicTypes(result);
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return result;
+        String query = "SELECT * FROM USERS WHERE ID = ?";
+        Object[] fields = new Object[] {id};
+        List<User> result = super.getAll(fields, query);
+        return result.isEmpty() ? null : result.get(0);
     }
 
     /**
@@ -247,38 +111,10 @@ public class UserDAO {
      * @return пользователь, если найден, иначе null.
      */
     public User findUserByName(String name) {
-        User result = null;
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            connection = this.pool.getConnection();
-            ps = connection.prepareStatement("SELECT * FROM USERS WHERE NAME = ?");
-            ps.setString(1, name);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                result = new User();
-                result.setId(rs.getInt(1));
-                result.setName(rs.getString(2));
-                result.setPassword(rs.getString(3));
-                result.setRoleId(rs.getInt(4));
-                result.setAddressId(rs.getInt(5));
-                this.fillMusicTypes(result);
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        return result;
+        String query = "SELECT * FROM USERS WHERE NAME = ?";
+        Object[] fields = new Object[] {name};
+        List<User> result = super.getAll(fields, query);
+        return result.isEmpty() ? null : result.get(0);
     }
 
     /**
@@ -292,17 +128,16 @@ public class UserDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            connection = this.pool.getConnection();
+            connection = super.pool.getConnection();
             ps = connection.prepareStatement("SELECT * FROM USER_MUSICTYPES WHERE USER_ID = ?");
             ps.setInt(1, user.getId());
             rs = ps.executeQuery();
             while (rs.next()) {
-                user.setMusicTypeId(rs.getInt(2));
+                user.setMusicTypeId(rs.getInt("musictype_id"));
             }
             result = true;
         } catch (SQLException sqle) {
             sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
             result = false;
         } finally {
             try {
@@ -311,7 +146,6 @@ public class UserDAO {
                 connection.close();
             } catch (Exception e) {
                 e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
             }
         }
         return result;
@@ -328,7 +162,7 @@ public class UserDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            connection = this.pool.getConnection();
+            connection = super.pool.getConnection();
             Set<Integer> userMusicTypes = user.getMusicTypeId();
             ps = connection.prepareStatement("DELETE FROM USER_MUSICTYPES WHERE USER_ID = ?");
             ps.setInt(1, user.getId());
@@ -350,7 +184,6 @@ public class UserDAO {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            LOGGER.error(sqle.getMessage(), sqle);
             result = false;
         } finally {
             try {
@@ -358,7 +191,6 @@ public class UserDAO {
                 connection.close();
             } catch (Exception e) {
                 e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
             }
         }
         return result;
@@ -383,23 +215,7 @@ public class UserDAO {
      * Очистить таблицу в БД.
      */
     public void clearTable() {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        try {
-            connection = this.pool.getConnection();
-            ps = connection.prepareStatement("TRUNCATE TABLE USERS RESTART IDENTITY CASCADE");
-            ps.execute();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error(sqle.getMessage(), sqle);
-        } finally {
-            try {
-                ps.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
+        String query = "TRUNCATE TABLE USERS RESTART IDENTITY CASCADE";
+        super.clearTable(query);
     }
 }

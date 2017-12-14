@@ -22,11 +22,9 @@ public class Auth implements Filter {
             chain.doFilter(req, resp);
         } else {
             HttpSession session = request.getSession();
-            synchronized (session) {
-                if (session == null || session.getAttribute("name") == null) {
+                if (session == null || session.getAttribute("role") == null) {
                     ((HttpServletResponse) resp).sendRedirect(String.format("%s/auth", request.getContextPath()));
                     return;
-                }
             }
             chain.doFilter(req, resp);
         }
