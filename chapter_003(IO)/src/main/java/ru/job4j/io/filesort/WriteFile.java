@@ -15,10 +15,10 @@ public class WriteFile {
     public void writeSortedFileByMapping(File source, File mapping, File destination) {
         String sourceLine = null;
         String separator = System.getProperty("line.separator");
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(mapping));
-            RandomAccessFile randomAccessFile = new RandomAccessFile(source, "r");
-            FileWriter fileWriter = new FileWriter(destination);
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(mapping));
+             RandomAccessFile randomAccessFile = new RandomAccessFile(source, "r");
+             FileWriter fileWriter = new FileWriter(destination)) {
+
             while ((sourceLine = bufferedReader.readLine()) != null) {
                 long byteIndex = Long.valueOf(sourceLine.split(" ")[1]);
                 randomAccessFile.seek(byteIndex);
@@ -28,8 +28,7 @@ public class WriteFile {
                 }
                 fileWriter.write(separator);
             }
-            fileWriter.flush();
-            fileWriter.close();
+
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }

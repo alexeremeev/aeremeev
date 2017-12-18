@@ -46,20 +46,21 @@ public class ChunkSorting {
      * Записывает массив во временный файл.
      * @param chunkMapping входной массив [длина строки][номер байта начала строки].
      * @param file временный файл.
-     * @throws IOException IOException.
      */
-    public void writeChunkMappingToFile(long[][]chunkMapping, File file) throws IOException {
+    public void writeChunkMappingToFile(long[][]chunkMapping, File file) {
         StringBuilder builder = new StringBuilder();
-        FileWriter writer = new FileWriter(file);
-        for (long[] line : chunkMapping) {
-            if (line[0] != 0 || line[1] != 0) {
-                builder.append(String.format("%d %d", line[0], line[1]));
-                builder.append(System.getProperty("line.separator"));
+        try (FileWriter writer = new FileWriter(file)) {
+            for (long[] line : chunkMapping) {
+                if (line[0] != 0 || line[1] != 0) {
+                    builder.append(String.format("%d %d", line[0], line[1]));
+                    builder.append(System.getProperty("line.separator"));
+                }
             }
+            writer.append(builder.toString());
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
-        writer.append(builder.toString());
-        writer.flush();
-        writer.close();
+
     }
 
     /**
@@ -67,72 +68,66 @@ public class ChunkSorting {
      * @param firstFile первый файл.
      * @param secondFile второй файл.
      * @param result выходной файл.
-     * @throws IOException IOException.
      */
-    public void mergeFiles(File firstFile, File secondFile, File result) throws IOException {
+    public void mergeFiles(File firstFile, File secondFile, File result) {
         boolean repeat = true;
         boolean readFirst = true;
         boolean readSecond = true;
 
         String firstString = null;
         String secondString = null;
-
-        BufferedReader firstBuffer = new BufferedReader(new FileReader(firstFile));
-        BufferedReader secondBuffer = new BufferedReader(new FileReader(secondFile));
-        FileWriter writer = new FileWriter(result);
-
-        while (repeat) {
-            if (readFirst) {
-                firstString = firstBuffer.readLine();
-                readFirst = false;
-            }
-            if (readSecond) {
-                secondString = secondBuffer.readLine();
-                readSecond = false;
-            }
-
-            if (firstString != null && secondString != null) {
-                if (Long.parseLong(firstString.split(" ")[0]) < Long.parseLong(secondString.split(" ")[0])) {
+        try (BufferedReader firstBuffer = new BufferedReader(new FileReader(firstFile));
+             BufferedReader secondBuffer = new BufferedReader(new FileReader(secondFile));
+             FileWriter writer = new FileWriter(result)) {
+            while (repeat) {
+                if (readFirst) {
+                    firstString = firstBuffer.readLine();
+                    readFirst = false;
+                }
+                if (readSecond) {
+                    secondString = secondBuffer.readLine();
+                    readSecond = false;
+                }
+                if (firstString != null && secondString != null) {
+                    if (Long.parseLong(firstString.split(" ")[0]) < Long.parseLong(secondString.split(" ")[0])) {
+                        writer.append(firstString);
+                        writer.append(System.getProperty("line.separator"));
+                        readFirst = true;
+                    } else if (Long.parseLong(firstString.split(" ")[0]) > Long.parseLong(secondString.split(" ")[0])) {
+                        writer.append(secondString);
+                        writer.append(System.getProperty("line.separator"));
+                        readSecond = true;
+                    } else {
+                        writer.append(firstString);
+                        writer.append(System.getProperty("line.separator"));
+                        writer.append(secondString);
+                        writer.append(System.getProperty("line.separator"));
+                        readFirst = true;
+                        readSecond = true;
+                    }
+                } else if (firstString != null) {
                     writer.append(firstString);
                     writer.append(System.getProperty("line.separator"));
                     readFirst = true;
-                } else if (Long.parseLong(firstString.split(" ")[0]) > Long.parseLong(secondString.split(" ")[0])) {
+                } else if (secondString != null) {
                     writer.append(secondString);
                     writer.append(System.getProperty("line.separator"));
                     readSecond = true;
                 } else {
-                    writer.append(firstString);
-                    writer.append(System.getProperty("line.separator"));
-                    writer.append(secondString);
-                    writer.append(System.getProperty("line.separator"));
-                    readFirst = true;
-                    readSecond = true;
+                    repeat = false;
                 }
-            } else if (firstString != null) {
-                writer.append(firstString);
-                writer.append(System.getProperty("line.separator"));
-                readFirst = true;
-            } else if (secondString != null) {
-                writer.append(secondString);
-                writer.append(System.getProperty("line.separator"));
-                readSecond = true;
-            } else {
-                repeat = false;
             }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
-        writer.flush();
-        writer.close();
-        firstBuffer.close();
-        secondBuffer.close();
     }
 
     /**
      * Собирает все полученные файлы массивов разметки в один итоговый.
      * @param files файлы раметки.
      * @return итоговый файл разметки.
-     * @throws IOException IOException.
      */
-    public File mergeArrayOfFiles(File[] files) throws IOException {
+    public File mergeArrayOfFiles(File[] files) {
         boolean repeat = true;
         File firstFile = null;
         File secondFile = null;

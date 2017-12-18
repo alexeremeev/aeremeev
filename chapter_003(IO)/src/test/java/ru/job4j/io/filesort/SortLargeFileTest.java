@@ -64,11 +64,13 @@ public class SortLargeFileTest {
         FileWriter writer = new FileWriter(originalFile);
         writer.write(original.toString());
         writer.flush();
+        writer.close();
 
         File expectedFile = new File(System.getProperty("java.io.tmpdir") + "/expectedTest.txt");
         FileWriter expectedWriter = new FileWriter(expectedFile);
         expectedWriter.write(expected.toString());
         expectedWriter.flush();
+        expectedWriter.close();
 
         File actualFile = new File(System.getProperty("java.io.tmpdir") + "/actualTest.txt");
 

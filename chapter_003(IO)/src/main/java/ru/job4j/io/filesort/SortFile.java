@@ -11,7 +11,6 @@ public interface SortFile {
      * Сортирует файл по длине строк и записывает новый.
      * @param source исходный файл.
      * @param destination файл назначения.
-     * @throws IOException IOException.
      */
-    void sort(File source, File destination) throws IOException;
+    void sort(File source, File destination);
 }

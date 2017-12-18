@@ -17,16 +17,16 @@ public class SortLargeFile implements SortFile {
     private static final int FILE_SPLIT_COUNT = 65536;
 
     @Override
-    public void sort(File source, File destination) throws IOException {
+    public void sort(File source, File destination) {
 
-        ReadFile readFile = new ReadFile(source);
+        ReadFile readFile = new ReadFile();
         ChunkSorting chunkSorting = new ChunkSorting();
         int index = 0;
 
         File[] files = new File[FILE_SPLIT_COUNT];
         do {
 
-            long[][] chunkMapping = readFile.getChunkMapping(STRING_COUNT);
+            long[][] chunkMapping = readFile.getChunkMapping(source, STRING_COUNT);
             chunkSorting.shellSort(chunkMapping);
             File temp = new File(System.getProperty("java.io.tmpdir") + "/0tmp" + index);
             files[index] = temp;
