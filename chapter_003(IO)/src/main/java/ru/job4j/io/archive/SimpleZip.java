@@ -21,7 +21,7 @@ public class SimpleZip {
     /**
      * Список файлов для архивации.
      */
-    private static final List<String> FILE_LIST = new ArrayList<>(100);
+    private List<String> fileList;
     /**
      * Корневая директория для архивации.
      */
@@ -39,6 +39,7 @@ public class SimpleZip {
     public SimpleZip(String sourceFolder, String[] ext) {
         this.sourceFolder = sourceFolder;
         this.ext = ext;
+        this.fileList = new ArrayList<>(100);
     }
 
     /**
@@ -74,7 +75,6 @@ public class SimpleZip {
             System.out.println(e.getMessage());
             formatter.printHelp("SimpleZip", options);
 
-            System.exit(1);
             return;
         }
 
@@ -91,39 +91,33 @@ public class SimpleZip {
     }
 
     /**
-     * Архивирует файлы из FILE_LIST в zipFile.
+     * Архивирует файлы из fileList в zipFile.
      * @param zipFile путь к файлу назначения.
      */
     public void zipSource(String zipFile) {
 
         byte[] buffer = new byte[1024];
 
-        try {
+        try (FileOutputStream fos = new FileOutputStream(zipFile);
+             ZipOutputStream zos = new ZipOutputStream(fos)){
 
-            FileOutputStream fos = new FileOutputStream(zipFile);
-            ZipOutputStream zos = new ZipOutputStream(fos);
             System.out.println(String.format("Input folder: %s", this.sourceFolder));
             System.out.println(String.format("Output to Zip : %s", zipFile));
 
-            for (String file : FILE_LIST) {
+            for (String file : this.fileList) {
 
                 System.out.println(String.format("File Added : %s", file));
                 ZipEntry ze = new ZipEntry(file);
                 zos.putNextEntry(ze);
 
-                FileInputStream in = new FileInputStream(String.format("%s%s%s", this.sourceFolder, File.separator, file));
-
-                int len;
-                while ((len = in.read(buffer)) > 0) {
-                    zos.write(buffer, 0, len);
+                try (FileInputStream in = new FileInputStream(String.format("%s%s%s", this.sourceFolder, File.separator, file))) {
+                    int len;
+                    while ((len = in.read(buffer)) > 0) {
+                        zos.write(buffer, 0, len);
+                    }
                 }
-
-                in.close();
             }
-
             zos.closeEntry();
-            zos.close();
-
             System.out.println("Done");
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -131,7 +125,7 @@ public class SimpleZip {
     }
 
     /**
-     * Получеает список файлов для архивации. Список сохраняется в FILE_LIST.
+     * Получеает список файлов для архивации. Список сохраняется в fileList.
      * @param node файл или директория.
      * @param exts расширения файлов для архивации.
      */
@@ -140,7 +134,7 @@ public class SimpleZip {
         if (node.isFile()) {
             for (String extension: exts) {
                 if (this.getFileExtension(node).equals(extension)) {
-                    FILE_LIST.add(generateZipEntry(node.getAbsoluteFile().toString()));
+                    this.fileList.add(generateZipEntry(node.getAbsoluteFile().toString()));
                     break;
                 }
             }
