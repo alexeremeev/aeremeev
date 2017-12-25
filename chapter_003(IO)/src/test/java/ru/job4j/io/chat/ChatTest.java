@@ -25,8 +25,8 @@ public class ChatTest {
         chat.exchangeMessages();
 
         int index = 0;
-        try (BufferedReader reader = new BufferedReader(new FileReader(
-                new File("c:/projects/aeremeev/log.txt")))) {
+        File logFile = new File("c:/projects/aeremeev/log.txt");
+        try (BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
 
             assertThat(reader.readLine(), is(String.format("user: %s", inputs[index++])));
             assertNotNull(reader.readLine());
@@ -35,6 +35,7 @@ public class ChatTest {
             assertThat(reader.readLine(), is(String.format("user: %s", inputs[index++])));
             assertThat(reader.readLine(), is(String.format("user: %s", inputs[index++])));
             assertNotNull(reader.readLine());
+            logFile.delete();
 
         } catch (IOException ioe) {
             ioe.printStackTrace();

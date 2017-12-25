@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import ru.job4j.io.chat.StubIO;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -46,6 +47,11 @@ public class ServerTest {
         String wiseman = new String(wiseBytes, StandardCharsets.UTF_8);
 
         assertEquals("The content in the strings should match", user, wiseman);
+
+        File userDel = new File("c:/projects/aeremeev/userlog.txt");
+        File wiseDel = new File("c:/projects/aeremeev/wiselog.txt");
+        userDel.delete();
+        wiseDel.delete();
 
     }
 }
