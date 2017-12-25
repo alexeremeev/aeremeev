@@ -99,7 +99,7 @@ public class SimpleZip {
         byte[] buffer = new byte[1024];
 
         try (FileOutputStream fos = new FileOutputStream(zipFile);
-             ZipOutputStream zos = new ZipOutputStream(fos)){
+             ZipOutputStream zos = new ZipOutputStream(fos)) {
 
             System.out.println(String.format("Input folder: %s", this.sourceFolder));
             System.out.println(String.format("Output to Zip : %s", zipFile));
