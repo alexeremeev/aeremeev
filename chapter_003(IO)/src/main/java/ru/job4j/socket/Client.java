@@ -94,7 +94,7 @@ public class Client {
                 this.io.println(received);
                 log.append(String.format("%s%s", received, separator));
                 this.io.print("user: ");
-            } while (!send.equalsIgnoreCase(EXIT));
+            } while (!EXIT.equalsIgnoreCase(send));
         } catch (IOException ioe) {
             ioe.printStackTrace();
         } finally {

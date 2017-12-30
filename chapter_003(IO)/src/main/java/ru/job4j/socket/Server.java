@@ -117,7 +117,7 @@ public class Server {
                     log.append(String.format("oracle: %s%s", send, separator));
                     output.writeUTF(String.format("oracle: %s", send));
                 }
-            } while (!received.equalsIgnoreCase(EXIT));
+            } while (!EXIT.equalsIgnoreCase(received));
         } catch (IOException ioe) {
             ioe.printStackTrace();
         } finally {
