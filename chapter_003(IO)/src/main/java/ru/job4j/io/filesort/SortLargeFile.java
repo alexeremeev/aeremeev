@@ -1,7 +1,6 @@
 package ru.job4j.io.filesort;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * class SortLargeFile - сортировка файла путем выделения его разметки и послеующей записи нового файла по ней.
@@ -27,7 +26,7 @@ public class SortLargeFile implements SortFile {
         do {
 
             long[][] chunkMapping = readFile.getChunkMapping(source, STRING_COUNT);
-            chunkSorting.shellSort(chunkMapping);
+            chunkSorting.comparatorSort(chunkMapping);
             File temp = new File(System.getProperty("java.io.tmpdir") + "/0tmp" + index);
             files[index] = temp;
             chunkSorting.writeChunkMappingToFile(chunkMapping, temp);

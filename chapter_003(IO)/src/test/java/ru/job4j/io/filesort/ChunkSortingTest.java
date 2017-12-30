@@ -4,10 +4,7 @@ import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -16,19 +13,6 @@ import static org.junit.Assert.*;
  * Тесты класса ChunkSorting.
  */
 public class ChunkSortingTest {
-    /**
-     * Тест сортировки.
-     */
-    @Test
-    public void whenSortViaShellAlgorithmThenGetSortedArray() {
-
-        long[][] original = {{2, 2342}, {8, 3345}, {1, 451}, {6, 4656}, {4, 55}, {9, 3}, {8, 228}, {0, 0}, {0, 0}};
-        long[][] expected = {{0, 0}, {0, 0}, {1, 451}, {2, 2342}, {4, 55}, {6, 4656}, {8, 228}, {8, 3345}, {9, 3}};
-        new ChunkSorting().shellSort(original);
-
-        assertThat(original, is(expected));
-    }
-
     /**
      * Тест сортировки.
      */
@@ -89,16 +73,16 @@ public class ChunkSortingTest {
         firstFileWriter.write(firstArray);
         firstFileWriter.flush();
         firstFileWriter.close();
-        
+
         FileWriter secondFileWriter = new FileWriter(pathToSecondFile);
         secondFileWriter.write(secondArray);
         secondFileWriter.flush();
         secondFileWriter.close();
-        
+
         final String pathResultFile = System.getProperty("java.io.tmpdir") + "/ResultTestFile.tmp";
         File resultFile = new File(pathResultFile);
         new ChunkSorting().mergeFiles(firstFile, secondFile, resultFile);
-        
+
         StringBuilder builder = new StringBuilder();
         FileReader fileReader = new FileReader(resultFile);
         int readByte;
@@ -106,13 +90,13 @@ public class ChunkSortingTest {
             builder.append((char) readByte);
         }
         fileReader.close();
-        
+
         Assert.assertThat(builder.toString(), Is.is(resultArray));
 
         firstFile.delete();
         secondFile.delete();
         resultFile.delete();
-   }
+    }
 
     /**
      * Тест слияния пяти массивов.
@@ -175,8 +159,4 @@ public class ChunkSortingTest {
 
         resultFile.delete();
     }
-
-
-
-
 }

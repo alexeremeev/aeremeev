@@ -47,9 +47,9 @@ public class SortLargeFileTest {
         expected.append(separator);
         expected.append("Big round ears get a Himalayan bear cub stuck in a can");
         expected.append(separator);
-        expected.append("Elderly woman attempts stealing alcohol for her birthday");
-        expected.append(separator);
         expected.append("Ulyanovsk man takes part in pancake eating contest, dies");
+        expected.append(separator);
+        expected.append("Elderly woman attempts stealing alcohol for her birthday");
         expected.append(separator);
         expected.append("Italian man pretended to be mafia member to get free croissants");
         expected.append(separator);

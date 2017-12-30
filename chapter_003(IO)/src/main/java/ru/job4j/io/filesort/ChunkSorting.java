@@ -1,45 +1,20 @@
 package ru.job4j.io.filesort;
 
 import java.io.*;
+import java.util.Scanner;
 
 /**
  * class ChunkSorting - сортировка и обработка массивов, полученных из ReadFile.getChunkMapping().
  */
 public class ChunkSorting {
+
+    private final static String SEPARATOR = System.getProperty("line.separator");
     /**
      * Сортировка с помощью компаратора.
      * @param chunkMapping long[][]chunkMapping.
      */
     public void comparatorSort(long[][]chunkMapping) {
         java.util.Arrays.sort(chunkMapping, java.util.Comparator.comparingLong(a -> a[0]));
-    }
-
-    /**
-     * Сортировка методом Шелла по значению первого индекса(длина строки).
-     * @param chunkMapping входной массив [длина строки][номер байта начала строки].
-     */
-    public void shellSort(long[][]chunkMapping) {
-        int inner;
-        int outer;
-        long[] temp;
-        int step = 1;
-        while (step <= chunkMapping.length / 3) {
-            step = step * 3 + 1;
-        }
-
-        while (step > 0) {
-            for (outer = step; outer < chunkMapping.length; outer++) {
-                temp = chunkMapping[outer];
-                inner = outer;
-
-                while (inner > step - 1 && chunkMapping[inner - step][0] >= temp[0]) {
-                    chunkMapping[inner] = chunkMapping[inner - step];
-                    inner -= step;
-                }
-                chunkMapping[inner] = temp;
-            }
-            step = (step - 1) / 3;
-        }
     }
 
     /**
@@ -73,45 +48,56 @@ public class ChunkSorting {
         boolean repeat = true;
         boolean readFirst = true;
         boolean readSecond = true;
-
-        String firstString = null;
-        String secondString = null;
-        try (BufferedReader firstBuffer = new BufferedReader(new FileReader(firstFile));
-             BufferedReader secondBuffer = new BufferedReader(new FileReader(secondFile));
+        Chunk left = new Chunk(0, 0);
+        Chunk right = new Chunk(0, 0);
+        try (Scanner firstBuffer = new Scanner(firstFile);
+             Scanner secondBuffer = new Scanner(secondFile);
              FileWriter writer = new FileWriter(result)) {
             while (repeat) {
                 if (readFirst) {
-                    firstString = firstBuffer.readLine();
+                    if (firstBuffer.hasNextLong()) {
+                        left.stringLength = firstBuffer.nextLong();
+                        left.stringMarker = firstBuffer.nextLong();
+                    }
                     readFirst = false;
                 }
                 if (readSecond) {
-                    secondString = secondBuffer.readLine();
+                    if (secondBuffer.hasNextLong()) {
+                        right.stringLength = secondBuffer.nextLong();
+                        right.stringMarker = secondBuffer.nextLong();
+                    }
                     readSecond = false;
                 }
-                if (firstString != null && secondString != null) {
-                    if (Long.parseLong(firstString.split(" ")[0]) < Long.parseLong(secondString.split(" ")[0])) {
-                        writer.append(firstString);
-                        writer.append(System.getProperty("line.separator"));
+                if (left.stringLength != 0 && right.stringLength != 0) {
+                    if (left.stringLength < right.stringLength) {
+                        writer.append(String.format("%d %d", left.stringLength, left.stringMarker));
+                        writer.append(SEPARATOR);
+                        left.setDefault();
                         readFirst = true;
-                    } else if (Long.parseLong(firstString.split(" ")[0]) > Long.parseLong(secondString.split(" ")[0])) {
-                        writer.append(secondString);
-                        writer.append(System.getProperty("line.separator"));
+                    } else if (left.stringLength > right.stringLength) {
+                        writer.append(String.format("%d %d", right.stringLength, right.stringMarker));
+                        writer.append(SEPARATOR);
+                        right.setDefault();
                         readSecond = true;
                     } else {
-                        writer.append(firstString);
-                        writer.append(System.getProperty("line.separator"));
-                        writer.append(secondString);
-                        writer.append(System.getProperty("line.separator"));
+                        writer.append(String.format("%d %d", left.stringLength, left.stringMarker));
+                        writer.append(SEPARATOR);
+                        writer.append(String.format("%d %d", right.stringLength, right.stringMarker));
+                        writer.append(SEPARATOR);
+                        left.setDefault();
+                        right.setDefault();
                         readFirst = true;
                         readSecond = true;
                     }
-                } else if (firstString != null) {
-                    writer.append(firstString);
-                    writer.append(System.getProperty("line.separator"));
+                } else if (left.stringLength != 0) {
+                    writer.append(String.format("%d %d", left.stringLength, left.stringMarker));
+                    writer.append(SEPARATOR);
+                    left.setDefault();
                     readFirst = true;
-                } else if (secondString != null) {
-                    writer.append(secondString);
-                    writer.append(System.getProperty("line.separator"));
+                } else if (right.stringLength != 0) {
+                    writer.append(String.format("%d %d", right.stringLength, right.stringMarker));
+                    writer.append(SEPARATOR);
+                    right.setDefault();
                     readSecond = true;
                 } else {
                     repeat = false;
@@ -169,5 +155,33 @@ public class ChunkSorting {
         return files[files.length - 1];
     }
 
+    private class Chunk {
 
+        private long stringLength;
+
+        private long stringMarker;
+
+        public Chunk(long stringLength, long stringMarker) {
+            this.stringLength = stringLength;
+            this.stringMarker = stringMarker;
+        }
+
+        public void setDefault() {
+            this.setStringLength(0);
+            this.setStringMarker(0);
+        }
+
+        public void setStringLength(long stringLength) {
+            this.stringLength = stringLength;
+        }
+
+        public void setStringMarker(long stringMarker) {
+            this.stringMarker = stringMarker;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Chunk: %d %d", this.stringLength, this.stringMarker);
+        }
+    }
 }
