@@ -126,6 +126,14 @@ public class Menu {
         return this.result;
     }
 
+    protected void setResult(double result) {
+        this.result = result;
+    }
+
+    protected void setUseResult(boolean repeat) {
+        this.useResult = repeat;
+    }
+
     /**
      * Print error message.
      */
