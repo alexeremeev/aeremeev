@@ -40,14 +40,6 @@ public abstract class Storage {
         this.today = today;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Food[] getStorageSpace() {
-        return storageSpace;
-    }
-
     /**
      * Date getter.
      * @return date.
