@@ -1,19 +1,41 @@
 package ru.job4j.lift;
 
-import java.util.TreeSet;
+import java.util.Comparator;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * class Elevator - модель лифта.
  */
 public final class Elevator {
     /**
-     * Сет запросов-нажатий на кнопки в лифте.
+     * Priory request queue with comparator.
+     * Sort ascending when elevator moves up and vice versa.
      */
-    private TreeSet<Integer> passengersRequests = new TreeSet<>();
+    private PriorityBlockingQueue<Integer> passengersRequests = new PriorityBlockingQueue<>(20, new Comparator<Integer>() {
+        @Override
+
+        public int compare(Integer floorA, Integer floorB) {
+            if (direction == Direction.UP) {
+                if (floorA < floorB) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            } else if (direction == Direction.DOWN) {
+                if (floorA < floorB) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+            return 0;
+        }
+    });
     /**
      * Текущий этаж.
      */
-    private int currentFloor;
+    private AtomicInteger currentFloor = new AtomicInteger();
     /**
      * Время открытия - закрытия дверей.
      */
@@ -27,32 +49,24 @@ public final class Elevator {
      */
     private Direction direction;
     /**
-     * Управляющий тред.
-     */
-    private Thread requestProcessorThread;
-
-    /**
      * Конструктор.
      * @param speed скорость лифта в м/c.
      * @param doorTime время открытия - закрытия дверей в с.
      * @param currentFloor текущий этаж.
      */
     public Elevator(int speed, int doorTime, int currentFloor) {
-        this.currentFloor = currentFloor;
+        this.currentFloor.set(currentFloor);
         this.doorTime = doorTime * 1000;
         this.speed = speed * 1000;
-        this.direction  = Direction.UP;
+        this.direction = Direction.UP;
     }
 
     /**
      * Добавить запрос в сет.
      */
-    public synchronized void addFloor(int f) {
-        passengersRequests.add(f);
-        if (requestProcessorThread.getState() == Thread.State.WAITING) {
-            notify();
-        } else {
-            requestProcessorThread.interrupt();
+    public void addFloor(int floor) {
+        if (!passengersRequests.contains(floor)) {
+            passengersRequests.put(floor);
         }
 
     }
@@ -60,33 +74,14 @@ public final class Elevator {
      * Получить следующий этаж для движения лифта.
      * @return следующий этаж для движения лифта.
      */
-    public synchronized int nextFloor() {
+    public int nextFloor() throws InterruptedException {
 
         Integer floor;
 
-        if (direction == Direction.UP) {
-            if (passengersRequests.ceiling(this.currentFloor) != null) {
-                floor = passengersRequests.ceiling(this.currentFloor);
-            } else {
-                floor = passengersRequests.floor(this.currentFloor);
+        floor = passengersRequests.peek();
+            if (floor != null && floor == this.currentFloor.get()) {
+                passengersRequests.remove(floor);
             }
-        } else {
-            if (passengersRequests.floor(this.currentFloor) != null) {
-                floor = passengersRequests.floor(this.currentFloor);
-            } else {
-                floor = passengersRequests.floor(this.currentFloor);
-            }
-        }
-        if (floor == null) {
-            try {
-                System.out.println(String.format("Waiting on %d floor...", this.currentFloor));
-                wait();
-            } catch (InterruptedException ie) {
-                ie.printStackTrace();
-            }
-        } else {
-            passengersRequests.remove(floor);
-        }
         return (floor == null) ? -1 : floor;
     }
 
@@ -94,8 +89,8 @@ public final class Elevator {
      * Геттер текущего этажа.
      * @return текущий этаж.
      */
-    public synchronized int getCurrentFloor() {
-        return this.currentFloor;
+    public int getCurrentFloor() {
+        return this.currentFloor.get();
     }
 
     /**
@@ -103,15 +98,18 @@ public final class Elevator {
      * @param currentFloor значение текущего этажа.
      * @throws InterruptedException InterruptedException.
      */
-    public void setCurrentFloor(int currentFloor) throws InterruptedException {
-        if (this.currentFloor > currentFloor) {
+    public int setCurrentFloor(int currentFloor) throws InterruptedException {
+        if (this.currentFloor.get()> currentFloor) {
             setDirection(Direction.DOWN);
+            this.currentFloor.getAndDecrement();
         } else {
             setDirection(Direction.UP);
+            this.currentFloor.getAndIncrement();
         }
-        this.currentFloor = currentFloor;
-        System.out.println(String.format("Elevator now on %d floor...", currentFloor));
+        //this.currentFloor.set(currentFloor);
+        System.out.println(String.format("Elevator now on %d floor...", this.currentFloor.get()));
         Thread.sleep(this.speed);
+        return this.currentFloor.get();
     }
 
     /**
@@ -123,6 +121,9 @@ public final class Elevator {
         Thread.sleep(this.doorTime / 2);
         System.out.println("Elevator doors are closing...");
         Thread.sleep(this.doorTime / 2);
+        if (this.passengersRequests.isEmpty()) {
+            System.out.println(String.format("Waiting on %d floor...", this.currentFloor.get()));
+        }
     }
 
     /**
@@ -132,22 +133,5 @@ public final class Elevator {
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
-
-    /**
-     * Сеттер управляющего треда.
-     * @param requestProcessorThread управляющий тред.
-     */
-    public void setRequestProcessorThread(Thread requestProcessorThread) {
-        this.requestProcessorThread = requestProcessorThread;
-    }
-
-    /**
-     * Геттер сета запросов к лифту.
-     * @return сет запросов к лифту.
-     */
-    public synchronized TreeSet<Integer> getPassengersRequests() {
-        return passengersRequests;
-    }
-
 
 }

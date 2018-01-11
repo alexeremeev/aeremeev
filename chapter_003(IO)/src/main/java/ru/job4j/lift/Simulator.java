@@ -10,16 +10,17 @@ public class Simulator {
      */
     public static void main(String[] args) {
 
-        Building building = new Building(20, 4);
+        Building building = new Building(20, 6);
 
-        Elevator elevator = new Elevator(3, 4, 1);
+        int speed = 2;
+
+        Elevator elevator = new Elevator(building.getFloorHeight() / speed, 4, 1);
         System.out.println("Elevator is working...");
 
         Thread requestListenerThread = new Thread(new RequestListener(elevator, building));
 
         Thread requestProcessorThread = new Thread(new RequestProcessor(elevator));
 
-        elevator.setRequestProcessorThread(requestProcessorThread);
         requestListenerThread.start();
         requestProcessorThread.start();
 

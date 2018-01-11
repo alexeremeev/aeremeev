@@ -20,25 +20,17 @@ public final class RequestProcessor implements Runnable {
     @Override
     public void run() {
         while (true) {
-            int floor = this.elevator.nextFloor();
-            int currentFloor = this.elevator.getCurrentFloor();
+            Integer floor;
             try {
+            floor = this.elevator.nextFloor();
                 if (floor >= 1) {
-                    if (currentFloor > floor) {
-                        while (currentFloor > floor) {
-                            this.elevator.setCurrentFloor(--currentFloor);
-                        }
-                    } else {
-                        while (currentFloor < floor) {
-                            this.elevator.setCurrentFloor(++currentFloor);
-                        }
+                    while (this.elevator.getCurrentFloor() != this.elevator.nextFloor()) {
+                        this.elevator.setCurrentFloor(this.elevator.nextFloor());
                     }
                     this.elevator.doorOpenClose();
                 }
             } catch (InterruptedException e) {
-                if (this.elevator.getCurrentFloor() != floor) {
-                    this.elevator.getPassengersRequests().add(floor);
-                }
+                e.printStackTrace();
             }
         }
     }
