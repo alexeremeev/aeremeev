@@ -56,6 +56,14 @@ public abstract class Storage {
         return today;
     }
 
+    public void setToday(GregorianCalendar today) {
+        this.today = today;
+    }
+
+    public void resetPosition() {
+        this.position = 0;
+    }
+
     /**
      * Add food product to storage.
      * @param food food product.

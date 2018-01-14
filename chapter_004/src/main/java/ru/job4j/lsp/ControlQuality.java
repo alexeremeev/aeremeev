@@ -3,6 +3,8 @@ package ru.job4j.lsp;
 import ru.job4j.lsp.products.Food;
 import ru.job4j.lsp.storage.Storage;
 
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -43,6 +45,27 @@ public class ControlQuality {
                 storage.addFood(food);
                 break;
             }
+        }
+    }
+
+    /**
+     * Resorts food by new current date.
+     * @param today new current date.
+     */
+    public void resort(GregorianCalendar today) {
+        List<Food> foods = new ArrayList<>();
+        for (Storage storage: this.storageList) {
+            storage.setToday(today);
+            storage.resetPosition();
+            for (int index = 0; index != storage.getStorageSpace().length; index++) {
+                if (storage.getStorageSpace()[index] != null) {
+                    foods.add(storage.getStorageSpace()[index]);
+                    storage.getStorageSpace()[index] = null;
+                }
+            }
+        }
+        for (Food food: foods) {
+            this.sort(food);
         }
     }
 
