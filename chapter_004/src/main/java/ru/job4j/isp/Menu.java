@@ -4,7 +4,7 @@ import java.util.*;
 /**
  * Menu.
  * @author aeremeev.
- * @version 1
+ * @version 1.1
  * @since 13.01.2018
  */
 public class Menu implements MenuInterface {
@@ -34,9 +34,17 @@ public class Menu implements MenuInterface {
 
     @Override
     public void select(String key) {
-        if (this.items.containsKey(key)) {
-            this.items.get(key).execute();
+        String subKey;
+        if (key.length() > 1) {
+            subKey = key.substring(0, 1);
         } else {
+            subKey = key;
+        }
+        boolean result = false;
+        if (this.items.containsKey(subKey)) {
+            result = this.items.get(subKey).execute(key);
+        }
+        if (!result) {
             System.out.println("Error, no such item in this menu");
         }
     }
