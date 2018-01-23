@@ -16,7 +16,7 @@ public class StartUi {
      * Константа выхода из программы.
      */
     //CHECKSTYLE.OFF
-    private final int  EXIT = 6;
+    private final static int EXIT = 6;
     //CHECKSTYLE.ON
 
     /**
