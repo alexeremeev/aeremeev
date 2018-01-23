@@ -7,7 +7,7 @@ import java.util.List;
  * Game field for tic tac toe.
  * @author aeremeev
  * @since 17.01.2018
- * @version 1
+ * @version 1.1
  */
 public class Field {
     /**
@@ -65,78 +65,56 @@ public class Field {
      * @return true, if one line is matching with mark.
      */
     public boolean checkGameField(Mark mark) {
-        return this.checkHorizontal(mark) || this.checkVertical(mark) || this.checkDiagonal(mark);
-    }
-
-    /**
-     * Check horizontal lines for matching mark.
-     * @param mark mark.
-     * @return true, if one line is matching with mark.
-     */
-    public boolean checkHorizontal(Mark mark) {
-        boolean result = true;
-        int start = 0;
+        boolean result = false;
         for (int i = 0; i != this.size; i++) {
-            result = true;
-            for (int j = 0; j != this.size; j++) {
-                if (gameField[start + j].getMark() != mark) {
-                    result = false;
-                    break;
-                }
-            }
+            result = this.checkLine(i * this.size, this.size - 1 + i * this.size, 1, mark);
             if (result) {
                 break;
             }
-            start += this.size;
+        }
+        if (!result) {
+            for (int i = 0; i != this.size; i++) {
+                result = this.checkLine(i, i + this.size * (this.size - 1), this.size, mark);
+                if (result) {
+                    break;
+                }
+            }
+        }
+        if (!result) {
+            int start = 0;
+            int end = this.size * this.size - 1;
+            int step = this.size + 1;
+            for (int i = 0; i != 2; i++) {
+                result = this.checkLine(start, end, step, mark);
+                if (result) {
+                    break;
+                }
+                start = this.size - 1;
+                end = this.size * (this.size - 1);
+                step = this.size - 1;
+            }
         }
         return result;
     }
-    /**
-     * Check vertical lines for matching mark.
-     * @param mark mark.
-     * @return true, if one line is matching with mark.
-     */
-    public boolean checkVertical(Mark mark) {
-        boolean result = true;
-        int start = 0;
-        for (int i = 0; i != this.size; i++) {
-            result = true;
-            for (int j = 0; j != this.size; j++) {
-                if (gameField[start + j * size].getMark() != mark) {
-                    result = false;
-                    break;
-                }
-            }
-            if (result) {
-                break;
-            }
-            start += 1;
-        }
-        return result;
-    }
-    /**
-     * Check two diagonal lines for matching mark.
-     * @param mark mark.
-     * @return true, if one line is matching with mark.
-     */
-    public boolean checkDiagonal(Mark mark) {
-        boolean result = true;
-        int start = 0;
-        int step = size + 1;
-        for (int i = 0; i != 2; i++) {
-            result = true;
-            for (int j = 0; j != this.size; j++) {
-                if (gameField[start + j * step].getMark() != mark) {
-                    result = false;
-                    break;
-                }
-            }
-            if (result) {
-                break;
-            }
-            start = size - 1;
-            step = size - 1;
 
+    /**
+     * /**
+     * Check line for matching mark.
+     * @param start gameField[start] index.
+     * @param end gameField[end] index.
+     * @param step step between cells.
+     * @param mark mark.
+     * @return true, if line have all matching marks.
+     */
+    public boolean checkLine(int start, int end, int step, Mark mark) {
+        boolean result = true;
+        int index = start;
+        while (index <= end) {
+            if (gameField[index].getMark() != mark) {
+                result = false;
+                break;
+            }
+            index += step;
         }
         return result;
     }
