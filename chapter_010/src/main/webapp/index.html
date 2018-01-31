@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>todo</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="viewtasks">
+        <form>
+            <input type="checkbox" id="checkDone" value="1">all task
+        </form>
+    </div>
+    <div class="createtask">
+        <form>
+            <label for="description">What needs to be done:</label>
+            <input type="text" id = "description">
+            <input type="checkbox" id = "done" value="1">done
+            <button type="button" id="create">TODO!</button>
+        </form>
+    </div>
+    <br>
+    <div class="table">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Description</th>
+                <th>Added on</th>
+                <th>Finished</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

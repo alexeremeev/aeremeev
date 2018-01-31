@@ -1,0 +1,32 @@
+<web-app>
+    <listener>
+        <listener-class>ru.job4j.todo.servlets.Initialize</listener-class>
+    </listener>
+    <servlet>
+        <servlet-name>Main</servlet-name>
+        <servlet-class>ru.job4j.todo.servlets.MainView</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>Delete</servlet-name>
+        <servlet-class>ru.job4j.todo.servlets.DeleteServlet</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>Update</servlet-name>
+        <servlet-class>ru.job4j.todo.servlets.UpdateServlet</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Main</servlet-name>
+        <url-pattern>/main</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Delete</servlet-name>
+        <url-pattern>/del</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Update</servlet-name>
+        <url-pattern>/upd</url-pattern>
+    </servlet-mapping>
+</web-app>

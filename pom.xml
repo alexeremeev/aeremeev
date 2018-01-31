@@ -31,11 +31,6 @@
         <artifactId>jcip-annotations</artifactId>
         <version>1.0</version>
     </dependency>
-    <dependency>
-        <groupId>javax.persistence</groupId>
-        <artifactId>persistence-api</artifactId>
-        <version>1.0</version>
-    </dependency>
     <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
     <dependency>
         <groupId>org.jsoup</groupId>
@@ -55,7 +50,6 @@
         <version>3.20.1</version>
         <scope>test</scope>
     </dependency>
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -111,11 +105,12 @@
         <artifactId>commons-lang3</artifactId>
         <version>3.7</version>
     </dependency>
-
-
-
-
-
+    <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>5.2.12.Final</version>
+    </dependency>
 </dependencies>
 
 <build>
@@ -156,6 +151,7 @@
     <module>chapter_008</module>
     <module>chapter_009</module>
     <module>chapter_009_dao</module>
+    <module>chapter_010</module>
     <module>control_tasks</module>
 </modules>
 </project>
