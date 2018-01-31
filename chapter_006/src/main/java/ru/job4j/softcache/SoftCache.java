@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * SoftCache - cache based on Map interface and soft references.
  * @author aeremeev.
- * @version 1
+ * @version 1.1
  * @since 25.01.2018
  */
 public class SoftCache {
@@ -40,19 +40,12 @@ public class SoftCache {
      * @return string representation of file.
      */
     public String getValue(String key) {
-        String result;
-        if (this.cache.containsKey(key)) {
-            if (this.cache.get(key) != null) {
-                result = this.cache.get(key).get();
-            } else {
-                this.addValue(key);
-                result = this.cache.get(key).get();
-            }
-        } else {
+        SoftReference<String> reference = this.cache.get(key);
+        if (reference == null) {
             this.addValue(key);
-            result = this.cache.get(key).get();
+            reference = this.cache.get(key);
         }
-        return result;
+        return reference.get();
     }
 
     /**
