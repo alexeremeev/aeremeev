@@ -7,29 +7,9 @@ import java.util.List;
  * N Queen problem puzzle.
  * @author aeremeev
  * @since 26.01.2018
- * @version 1
+ * @version 1.1
  */
 public class QueensProblem {
-    /**
-     * List of all permutations.
-     */
-    private List<String> allPermutations;
-
-    /**
-     * Constructor.
-     * @param allPermutations list of all permutations.
-     */
-    public QueensProblem(List<String> allPermutations) {
-        this.allPermutations = allPermutations;
-    }
-
-    /**
-     * Get all permutations.
-     * @return list of all permutations.
-     */
-    public List<String> getAllPermutations() {
-        return this.allPermutations;
-    }
 
     /**
      * Check if placement of queen don't have chance to capture another queen.
@@ -49,30 +29,35 @@ public class QueensProblem {
     }
 
     /**
-     * Add all permutations to list allPermutations using recursive backtracking.
+     * Get all permutations using recursive backtracking.
      * @param queensCount count of queens.
+     * @return list of all permutations.
      */
-    public void permute(int queensCount) {
+    public List<String> permute(int queensCount) {
+        List<String> result = new ArrayList<>();
         int[] queens = new int[queensCount];
-        this.permute(queens, 0);
+        this.permute(queens, 0, result);
+        return result;
     }
 
     /**
      * Method tries to put queen on field in "k" place. If k == queens.length, then permutation added to list.
      * @param queens queens placement array.
      * @param k place on field.
+     * @param result List of all permutations.
      */
-    private void permute(int[] queens, int k) {
+    private List<String> permute(int[] queens, int k, List<String> result) {
         if (k == queens.length) {
-            this.allPermutations.add(queensToString(queens));
+            result.add(queensToString(queens));
         } else {
             for (int i = 0; i < queens.length; i++) {
                 queens[k] = i;
                 if (notCapturing(queens, k)) {
-                    this.permute(queens, k + 1);
+                    this.permute(queens, k + 1, result);
                 }
             }
         }
+        return result;
     }
 
     /**
@@ -100,9 +85,7 @@ public class QueensProblem {
      * @param args args.
      */
     public static void main(String[] args) {
-        QueensProblem problem = new QueensProblem(new ArrayList<>());
-        problem.permute(8);
-        List<String> permutations = problem.getAllPermutations();
+        List<String> permutations = new QueensProblem().permute(8);
         for (String field: permutations) {
             System.out.println(field);
         }
