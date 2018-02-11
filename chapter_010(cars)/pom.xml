@@ -1,6 +1,6 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>chapter_010(cars)</artifactId>
+    <artifactId>chapter_010cars</artifactId>
     <version>2.0</version>
     <packaging>war</packaging>
     <parent>

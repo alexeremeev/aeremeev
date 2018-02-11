@@ -18,13 +18,13 @@ import static org.junit.Assert.*;
  */
 public class GearboxDAOTest {
 
-    private GearboxDAO dao = new GearboxDAO();
+    private DAOInterface<Gearbox> dao = new GenericDAO<>();
     /**
      * Clear table.
      */
     @Before
     public void clearTable() {
-        dao.clearTable();
+        dao.executeQuery("Truncate table gearbox restart identity cascade");
     }
     /**
      * Test of adding new gearbox.
@@ -32,9 +32,9 @@ public class GearboxDAOTest {
     @Test
     public void whenAddGearboxThenGetCorrectGearbox() {
         Gearbox gearbox = new Gearbox();
-        gearbox.setShift("auto");
+        gearbox.setName("auto");
         dao.saveOrUpdate(gearbox);
-        List<Gearbox> result = dao.getAll();
+        List<Gearbox> result = dao.getAll(Gearbox.class);
         assertThat(result.get(0), is(gearbox));
 
     }
@@ -44,11 +44,11 @@ public class GearboxDAOTest {
     @Test
     public void whenUpdateGearboxThenGetUpdatedResult() {
         Gearbox gearbox = new Gearbox();
-        gearbox.setShift("auto");
+        gearbox.setName("auto");
         dao.saveOrUpdate(gearbox);
-        gearbox.setShift("mechanical");
+        gearbox.setName("mechanical");
         dao.saveOrUpdate(gearbox);
-        List<Gearbox> result = dao.getAll();
+        List<Gearbox> result = dao.getAll(Gearbox.class);
         assertThat(result.get(0), is(gearbox));
     }
     /**
@@ -57,10 +57,10 @@ public class GearboxDAOTest {
     @Test
     public void whenDeleteGearboxThenResultListIsEmpty() {
         Gearbox gearbox = new Gearbox();
-        gearbox.setShift("auto");
+        gearbox.setName("auto");
         dao.saveOrUpdate(gearbox);
         dao.delete(gearbox);
-        List<Gearbox> result = dao.getAll();
+        List<Gearbox> result = dao.getAll(Gearbox.class);
         assertTrue(result.isEmpty());
 
     }
@@ -70,14 +70,14 @@ public class GearboxDAOTest {
     @Test
     public void whenAddCoupleGearboxesThenGetAllGearboxes() {
         Gearbox auto = new Gearbox();
-        auto.setShift("auto");
+        auto.setName("auto");
         Gearbox mechanical = new Gearbox();
-        mechanical.setShift("mechanical");
+        mechanical.setName("mechanical");
         dao.saveOrUpdate(auto);
         dao.saveOrUpdate(mechanical);
 
         List<Gearbox> expected = new ArrayList<>(Arrays.asList(auto, mechanical));
-        List<Gearbox> result = dao.getAll();
+        List<Gearbox> result = dao.getAll(Gearbox.class);
 
         assertThat(result, is(expected));
     }
@@ -87,11 +87,11 @@ public class GearboxDAOTest {
     @Test
     public void whenSearchGearboxByIDThenGetGearbox() {
         Gearbox expected = new Gearbox();
-        expected.setShift("auto");
+        expected.setName("auto");
         dao.saveOrUpdate(expected);
 
-        Gearbox result = dao.findById(expected.getId());
+        Gearbox result = dao.findById(Gearbox.class, expected.getId());
 
-        assertThat(result,is(expected));
+        assertThat(result, is(expected));
     }
 }

@@ -11,7 +11,7 @@ public class Engine {
 
     private int id;
 
-    private int force;
+    private int name;
 
     public int getId() {
         return id;
@@ -21,33 +21,36 @@ public class Engine {
         this.id = id;
     }
 
-    public int getForce() {
-        return force;
+    public int getName() {
+        return name;
     }
 
-    public void setForce(int force) {
-        this.force = force;
+    public void setName(int name) {
+        this.name = name;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Engine engine = (Engine) o;
-        return getId() == engine.getId() &&
-                getForce() == engine.getForce();
+        return getId() == engine.getId() && getName() == engine.getName();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getForce());
+        return Objects.hash(getId(), getName());
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Engine{");
         sb.append("id=").append(id);
-        sb.append(", force=").append(force);
+        sb.append(", force=").append(name);
         sb.append('}');
         return sb.toString();
     }

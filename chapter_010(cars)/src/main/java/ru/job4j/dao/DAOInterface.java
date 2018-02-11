@@ -41,5 +41,5 @@ public interface DAOInterface<T> {
      * Clear table.
      * @param query table truncate query.
      */
-    void clearTable(String query);
+    void executeQuery(String query);
 }

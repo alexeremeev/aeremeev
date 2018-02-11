@@ -11,7 +11,7 @@ public class Transmission {
 
     private int id;
 
-    private String drive;
+    private String name;
 
     public int getId() {
         return id;
@@ -21,33 +21,36 @@ public class Transmission {
         this.id = id;
     }
 
-    public String getDrive() {
-        return drive;
+    public String getName() {
+        return name;
     }
 
-    public void setDrive(String drive) {
-        this.drive = drive;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Transmission that = (Transmission) o;
-        return getId() == that.getId() &&
-                Objects.equals(getDrive(), that.getDrive());
+        return getId() == that.getId() && Objects.equals(getName(), that.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getDrive());
+        return Objects.hash(getId(), getName());
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Transmission{");
         sb.append("id=").append(id);
-        sb.append(", drive='").append(drive).append('\'');
+        sb.append(", drive='").append(name).append('\'');
         sb.append('}');
         return sb.toString();
     }

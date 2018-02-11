@@ -18,14 +18,14 @@ import static org.junit.Assert.*;
  */
 public class EngineDAOTest {
 
-    private EngineDAO dao = new EngineDAO();
+    private DAOInterface<Engine> dao = new GenericDAO<>();
 
     /**
      * Clear table.
      */
     @Before
     public void clearTable() {
-        dao.clearTable();
+        dao.executeQuery("Truncate table engine restart identity cascade");
     }
     /**
      * Test of adding new engine.
@@ -33,9 +33,9 @@ public class EngineDAOTest {
     @Test
     public void whenAddEngineThenGetCorrectEngine() {
         Engine engine = new Engine();
-        engine.setForce(108);
+        engine.setName(108);
         dao.saveOrUpdate(engine);
-        List<Engine> result = dao.getAll();
+        List<Engine> result = dao.getAll(Engine.class);
         assertThat(result.get(0), is(engine));
 
     }
@@ -45,11 +45,11 @@ public class EngineDAOTest {
     @Test
     public void whenUpdateEngineThenGetUpdatedResult() {
         Engine engine = new Engine();
-        engine.setForce(108);
+        engine.setName(108);
         dao.saveOrUpdate(engine);
-        engine.setForce(160);
+        engine.setName(160);
         dao.saveOrUpdate(engine);
-        List<Engine> result = dao.getAll();
+        List<Engine> result = dao.getAll(Engine.class);
         assertThat(result.get(0), is(engine));
     }
     /**
@@ -58,10 +58,10 @@ public class EngineDAOTest {
     @Test
     public void whenDeleteEngineThenResultListIsEmpty() {
         Engine engine = new Engine();
-        engine.setForce(108);
+        engine.setName(108);
         dao.saveOrUpdate(engine);
         dao.delete(engine);
-        List<Engine> result = dao.getAll();
+        List<Engine> result = dao.getAll(Engine.class);
         assertTrue(result.isEmpty());
 
     }
@@ -71,14 +71,14 @@ public class EngineDAOTest {
     @Test
     public void whenAddCoupleEnginesThenGetAllEngines() {
         Engine engine108 = new Engine();
-        engine108.setForce(108);
+        engine108.setName(108);
         Engine engine160 = new Engine();
-        engine160.setForce(160);
+        engine160.setName(160);
         dao.saveOrUpdate(engine108);
         dao.saveOrUpdate(engine160);
 
         List<Engine> expected = new ArrayList<>(Arrays.asList(engine108, engine160));
-        List<Engine> result = dao.getAll();
+        List<Engine> result = dao.getAll(Engine.class);
 
         assertThat(result, is(expected));
     }
@@ -88,12 +88,12 @@ public class EngineDAOTest {
     @Test
     public void whenSearchEngineByIDThenGetEngine() {
         Engine expected = new Engine();
-        expected.setForce(108);
+        expected.setName(108);
         dao.saveOrUpdate(expected);
 
-        Engine result = dao.findById(expected.getId());
+        Engine result = dao.findById(Engine.class, expected.getId());
 
-        assertThat(result,is(expected));
+        assertThat(result, is(expected));
     }
 
 }

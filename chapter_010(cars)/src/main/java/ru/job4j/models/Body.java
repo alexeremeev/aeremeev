@@ -2,14 +2,14 @@ package ru.job4j.models;
 
 import java.util.Objects;
 /**
- * Gearbox model.
+ * Body model.
  * @author aeremeev.
  * @version 1
- * @since 01.02.2018
+ * @since 04.02.2018
  */
-public class Gearbox {
+public class Body {
 
-    private int id;
+    int id;
 
     private String name;
 
@@ -37,8 +37,9 @@ public class Gearbox {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Gearbox gearbox = (Gearbox) o;
-        return getId() == gearbox.getId() && Objects.equals(getName(), gearbox.getName());
+        Body body = (Body) o;
+        return getId() == body.getId()
+                && Objects.equals(getName(), body.getName());
     }
 
     @Override
@@ -48,9 +49,9 @@ public class Gearbox {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Gearbox{");
+        final StringBuilder sb = new StringBuilder("Body{");
         sb.append("id=").append(id);
-        sb.append(", shift='").append(name).append('\'');
+        sb.append(", name='").append(name).append('\'');
         sb.append('}');
         return sb.toString();
     }

@@ -1,0 +1,64 @@
+<web-app>
+    <listener>
+        <listener-class>ru.job4j.servlets.Initialize</listener-class>
+    </listener>
+    <servlet>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>ru.job4j.servlets.Login</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>Fill</servlet-name>
+        <servlet-class>ru.job4j.servlets.Fill</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>Create</servlet-name>
+        <servlet-class>ru.job4j.servlets.Create</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>Edit</servlet-name>
+        <servlet-class>ru.job4j.servlets.Edit</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>Image Controller</servlet-name>
+        <servlet-class>ru.job4j.servlets.ImageController</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <filter>
+        <filter-name>Encoding Filter</filter-name>
+        <filter-class>ru.job4j.servlets.EncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+
+
+    <servlet-mapping>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Fill</servlet-name>
+        <url-pattern>/fill</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Create</servlet-name>
+        <url-pattern>/create</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Edit</servlet-name>
+        <url-pattern>/edit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Image Controller</servlet-name>
+        <url-pattern>/image</url-pattern>
+    </servlet-mapping>
+    <filter-mapping>
+        <filter-name>Encoding Filter</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
+</web-app>

@@ -11,5 +11,7 @@
         <many-to-one name="engine" column="engine_id" class="ru.job4j.models.Engine"/>
         <many-to-one name="gearbox" column="gearbox_id" class="ru.job4j.models.Gearbox"/>
         <many-to-one name="transmission" column="transmission_id" class="ru.job4j.models.Transmission"/>
+        <many-to-one name="body" column="body_id" class="ru.job4j.models.Body"/>
+        <many-to-one name="model" column="model_id" class="ru.job4j.models.Model"/>
     </class>
 </hibernate-mapping>

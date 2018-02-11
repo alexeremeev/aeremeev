@@ -13,18 +13,18 @@ import static org.junit.Assert.*;
 /**
  * Transmission DAO tests.
  * @author aeremeev.
- * @version 1
+ * @version 1.1
  * @since 01.02.2018
  */
 public class TransmissionDAOTest {
 
-    private TransmissionDAO dao = new TransmissionDAO();
+    private GenericDAO<Transmission> dao = new GenericDAO<>();
     /**
      * Clear table.
      */
     @Before
     public void clearTable() {
-        dao.clearTable();
+        dao.executeQuery("Truncate table transmission restart identity cascade");
     }
     /**
      * Test of adding new transmission.
@@ -32,9 +32,9 @@ public class TransmissionDAOTest {
     @Test
     public void whenAddTransmissionThenGetCorrectTransmission() {
         Transmission transmission = new Transmission();
-        transmission.setDrive("front");
+        transmission.setName("front");
         dao.saveOrUpdate(transmission);
-        List<Transmission> result = dao.getAll();
+        List<Transmission> result = dao.getAll(Transmission.class);
         assertThat(result.get(0), is(transmission));
 
     }
@@ -44,11 +44,11 @@ public class TransmissionDAOTest {
     @Test
     public void whenUpdateTransmissionThenGetUpdatedResult() {
         Transmission transmission = new Transmission();
-        transmission.setDrive("front");
+        transmission.setName("front");
         dao.saveOrUpdate(transmission);
-        transmission.setDrive("rear");
+        transmission.setName("rear");
         dao.saveOrUpdate(transmission);
-        List<Transmission> result = dao.getAll();
+        List<Transmission> result = dao.getAll(Transmission.class);
         assertThat(result.get(0), is(transmission));
     }
     /**
@@ -57,10 +57,10 @@ public class TransmissionDAOTest {
     @Test
     public void whenDeleteTransmissionThenResultListIsEmpty() {
         Transmission transmission = new Transmission();
-        transmission.setDrive("front");
+        transmission.setName("front");
         dao.saveOrUpdate(transmission);
         dao.delete(transmission);
-        List<Transmission> result = dao.getAll();
+        List<Transmission> result = dao.getAll(Transmission.class);
         assertTrue(result.isEmpty());
 
     }
@@ -70,14 +70,14 @@ public class TransmissionDAOTest {
     @Test
     public void whenAddCoupleTransmissionsThenGetAllTransmissions() {
         Transmission front = new Transmission();
-        front.setDrive("front");
+        front.setName("front");
         Transmission rear = new Transmission();
-        rear.setDrive("rear");
+        rear.setName("rear");
         dao.saveOrUpdate(front);
         dao.saveOrUpdate(rear);
 
         List<Transmission> expected = new ArrayList<>(Arrays.asList(front, rear));
-        List<Transmission> result = dao.getAll();
+        List<Transmission> result = dao.getAll(Transmission.class);
 
         assertThat(result, is(expected));
     }
@@ -87,11 +87,11 @@ public class TransmissionDAOTest {
     @Test
     public void whenSearchTransmissionByIDThenGetTransmission() {
         Transmission expected = new Transmission();
-        expected.setDrive("front");
+        expected.setName("front");
         dao.saveOrUpdate(expected);
 
-        Transmission result = dao.findById(expected.getId());
+        Transmission result = dao.findById(Transmission.class, expected.getId());
 
-        assertThat(result,is(expected));
+        assertThat(result, is(expected));
     }
 }

@@ -9,7 +9,7 @@ import java.util.Objects;
  */
 public class Car {
 
-    private int id;
+    private Integer id;
 
     private String name;
 
@@ -19,14 +19,18 @@ public class Car {
 
     private Engine engine;
 
+    private Body body;
+
+    private Model model;
+
     public Car() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -62,16 +66,36 @@ public class Car {
         this.engine = engine;
     }
 
+    public Body getBody() {
+        return body;
+    }
+
+    public void setBody(Body body) {
+        this.body = body;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Car car = (Car) o;
-        return getId() == car.getId() &&
-                Objects.equals(getName(), car.getName()) &&
-                Objects.equals(getTransmission(), car.getTransmission()) &&
-                Objects.equals(getGearbox(), car.getGearbox()) &&
-                Objects.equals(getEngine(), car.getEngine());
+        return getId() == car.getId()
+                && Objects.equals(getName(), car.getName())
+                && Objects.equals(getTransmission(), car.getTransmission())
+                && Objects.equals(getGearbox(), car.getGearbox())
+                && Objects.equals(getEngine(), car.getEngine());
     }
 
     @Override
