@@ -8,7 +8,7 @@ import java.sql.Timestamp;
  * @version 1
  * @since 31.01.2018
  */
-public abstract class Event {
+public abstract class Event implements Comparable<Event> {
     /**
      * ID.
      */
@@ -34,6 +34,11 @@ public abstract class Event {
      */
     public long getTime() {
         return this.time;
+    }
+
+    @Override
+    public int compareTo(Event o) {
+        return Long.compare(time, o.getTime());
     }
 
     @Override

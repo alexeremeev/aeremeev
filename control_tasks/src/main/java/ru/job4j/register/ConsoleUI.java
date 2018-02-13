@@ -6,6 +6,7 @@ import ru.job4j.register.model.Event;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Console UI.
@@ -84,7 +85,7 @@ public class ConsoleUI {
 
         @Override
         public void execute(Register register) {
-            List<Event> result = register.get(time);
+            Set<Event> result = register.get(time);
             for (Event event: result) {
                 System.out.println(event);
             }
