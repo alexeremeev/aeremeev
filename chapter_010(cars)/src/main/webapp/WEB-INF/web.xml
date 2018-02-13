@@ -27,6 +27,11 @@
         <servlet-class>ru.job4j.servlets.ImageController</servlet-class>
         <load-on-startup>0</load-on-startup>
     </servlet>
+    <servlet>
+        <servlet-name>Orders Filter</servlet-name>
+        <servlet-class>ru.job4j.servlets.OrdersFilter</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
     <filter>
         <filter-name>Encoding Filter</filter-name>
         <filter-class>ru.job4j.servlets.EncodingFilter</filter-class>
@@ -56,6 +61,10 @@
     <servlet-mapping>
         <servlet-name>Image Controller</servlet-name>
         <url-pattern>/image</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Orders Filter</servlet-name>
+        <url-pattern>/filter</url-pattern>
     </servlet-mapping>
     <filter-mapping>
         <filter-name>Encoding Filter</filter-name>

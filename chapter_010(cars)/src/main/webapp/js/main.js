@@ -75,6 +75,10 @@ $(document).ready(function () {
         $('.carousel-inner').html('');
     });
 
+    $("#flt-ord-btn").click(function(){
+        filterTable();
+    });
+
 });
 
 
@@ -103,9 +107,65 @@ function updateTable(){
         url: "create",
         method: "get",
         complete: function (data) {
+            var result = JSON.parse(data.responseText);
+            var userId = result.currentUser;
+            var orders = JSON.parse(result.orders);
+            if(result.orders != ''){
+                var optional = "";
+                for (var i = 0; i != orders.length; ++i) {
+                    var userOrder = orders[i].userId;
+                    var flag = (orders[i].sold === true);
+                    optional += "<tr>";
+                    if (flag) {
+                        optional += "<td>Продано</td>";
+                    } else {
+                        optional += "<td>Продается</td>";
+                    }
+                    optional += "<td>"+orders[i].carName+"</td>";
+                    optional += "<td>"+orders[i].price+"</td>";
+                    optional += "<td>"+orders[i].mileage+"</td>";
+                    optional += "<td>"+orders[i].date+"</td>";
+                    optional += "<td><button type='button' class='btn btn-link pictures' value='"+orders[i].orderId+"' onclick= 'callGallery(" + orders[i].orderId + ")' >Галерея</button></td>";
+                    if(userOrder == userId){
+                        optional += "<td><button type='button' class='btn btn-link' onclick= 'editOrder(" + orders[i].orderId + ")' ><i class= 'material-icons' style='font-size:20px'>mode_edit</i></button></td>";
+                    } else {
+                        optional += "<td><button type='button' class='btn btn-link' disabled ><i class= 'material-icons' style='font-size:20px'>mode_edit</i></button></td>";
+                    }
+                    optional += "</tr>";
+                }
+                var table = document.getElementById("table-body");
+                table.innerHTML = optional;
+            }
+        }
+    });
+}
+
+function filterTable(){
+
+    var modelInput = $("#model").val();
+    var model = "%".concat(modelInput);
+    var isEmpty = -1;
+    if($("#photo").prop('checked')) {
+        isEmpty = 0;
+    }
+    var orderDate = 0;
+    var date = new Date();
+    if ($("#orderDate").prop('checked')) {
+        orderDate = date.getTime() - 1000 * 60 *60 * 24;
+    }
+
+    $.ajax({
+        url: "filter",
+        method: "get",
+        data: {
+            'model' : model,
+            'isEmpty' : isEmpty,
+            'orderDate' : orderDate
+        },
+        complete: function (data) {
             var result =  JSON.parse(data.responseText);
             var userId =  result.currentUser;
-            var orders   =  JSON.parse(result.orders);
+            var orders   =  result.orders;
             if(result.orders != ''){
                 var optional = "";
                 for (var i = 0; i != orders.length; ++i) {

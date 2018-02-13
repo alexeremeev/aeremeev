@@ -44,6 +44,7 @@ public class Create extends HttpServlet {
         }
         object.addProperty("currentUser", userId);
         object.addProperty("orders", listToJsonArray(dao.getAll(Order.class)).toString());
+        System.out.println(object.toString());
         writer.append(object.toString());
         writer.flush();
     }

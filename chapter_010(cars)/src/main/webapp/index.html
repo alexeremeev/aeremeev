@@ -43,6 +43,30 @@
 
         <div class="col-sm-9">
             <h4 align="center">Список объявлений</h4>
+            <br>
+
+            <div align="center">
+                <h5 align="center" >Фильтр объявлений</h5>
+                <br>
+                <form class="form-inline">
+                    <div class="form-group">
+                        Марка:
+                        <input type="text" class="form-control"  placeholder="Марка" id="model">
+                    </div>
+                    <div class="form-group">
+                        С фото:
+                        <input type="checkbox" class="form-control" id ="photo">
+                    </div>
+                    <div class="form-group">
+                        За последние сутки:
+                        <input type="checkbox" class="form-control" id ="orderDate">
+                    </div>
+
+                    <button type="button" class="btn btn-default btn-filter" id="flt-ord-btn" onclick="filterTable()">Поиск</button>
+                </form>
+
+            </div>
+            <br><br>
             <div class="container">
                 <table class="table">
                     <thead>
