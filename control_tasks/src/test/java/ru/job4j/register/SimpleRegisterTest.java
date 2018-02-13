@@ -4,9 +4,7 @@ import org.junit.Test;
 import ru.job4j.register.model.Event;
 import ru.job4j.register.model.SimpleEvent;
 
-import java.util.Arrays;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -28,21 +26,16 @@ public class SimpleRegisterTest {
         register.add(hourEvent);
         register.add(minuteEvent);
 
-        Set<Event> expectedDays = new TreeSet<>(Arrays.asList(dayEvent, hourEvent, minuteEvent));
-        Set<Event> expectedHours = new TreeSet<>(Arrays.asList(hourEvent, minuteEvent));
-        Set<Event> expectedMinutes = new TreeSet<>(Arrays.asList(minuteEvent));
-
-
-        Set<Event> days = register.get(DAY);
+        List<Event> days = register.get(DAY);
         assertTrue(days.size() == 3);
-        assertThat(days, is(expectedDays));
+        assertThat(days.get(0), is(dayEvent));
 
-        Set<Event> hours = register.get(HOUR);
+        List<Event> hours = register.get(HOUR);
         assertTrue(hours.size() == 2);
-        assertThat(hours, is(expectedHours));
+        assertThat(hours.get(0), is(hourEvent));
 
-        Set<Event> minutes = register.get(MINUTE);
+        List<Event> minutes = register.get(MINUTE);
         assertTrue(minutes.size() == 1);
-        assertThat(minutes, is(expectedMinutes));
+        assertThat(minutes.get(0), is(minuteEvent));
     }
 }

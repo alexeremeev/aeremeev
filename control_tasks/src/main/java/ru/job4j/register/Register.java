@@ -2,7 +2,7 @@ package ru.job4j.register;
 
 import ru.job4j.register.model.Event;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Register interface.
@@ -22,5 +22,5 @@ public interface Register {
      * @param time time of query.
      * @return list of events.
      */
-    Set<Event> get(long time);
+    List<Event> get(long time);
 }

@@ -12,7 +12,6 @@
         <property name="mileage" column="mileage"/>
         <property name="releaseDate" column="releasedate"/>
         <property name="sold" column="sold"/>
-        <property name="orderDate" column="order_date"/>
         <many-to-one name="user" column="user_id" class="ru.job4j.models.User" lazy="false" fetch="select"/>
         <bag name="images" fetch="select" lazy="true" inverse="true">
             <key column="order_id" not-null="true"></key>
