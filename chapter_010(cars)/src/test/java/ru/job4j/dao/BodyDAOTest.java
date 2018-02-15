@@ -11,6 +11,12 @@ import java.util.List;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
+/**
+ * Body DAO tests HSQL DB based.
+ * @author aeremeev.
+ * @version 1.1
+ * @since 01.02.2018
+ */
 public class BodyDAOTest {
     
     private DAOInterface<Body> dao = new GenericDAO<>();
@@ -20,7 +26,7 @@ public class BodyDAOTest {
      */
     @Before
     public void clearTable() {
-        dao.executeQuery("Truncate table body restart identity cascade");
+        dao.executeQuery("Truncate table body restart identity and commit no check");
     }
     /**
      * Test of adding new body.

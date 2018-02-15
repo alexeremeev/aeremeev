@@ -11,7 +11,7 @@ import java.util.List;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 /**
- * Car DAO tests.
+ * Car DAO tests HSQL DB based.
  * @author aeremeev.
  * @version 1.1
  * @since 01.02.2018
@@ -31,12 +31,7 @@ public class CarDAOTest {
      */
     @Before
     public void clearTable() {
-        dao.executeQuery("Truncate table car restart identity");
-        dao.executeQuery("Truncate table engine restart identity cascade");
-        dao.executeQuery("Truncate table gearbox restart identity cascade");
-        dao.executeQuery("Truncate table transmission restart identity cascade");
-        dao.executeQuery("Truncate table body restart identity cascade");
-        dao.executeQuery("Truncate table model restart identity cascade");
+        dao.executeQuery("Truncate table car restart identity and commit no check");
         testEngine.setName(108);
         dao.saveOrUpdate(testEngine);
         testGearbox.setName("auto");
@@ -139,7 +134,7 @@ public class CarDAOTest {
      * Test of searching car by ID.
      */
     @Test
-    public void whenSearchCarByIDThenGetEngine() {
+    public void whenSearchCarByIDThenGetCar() {
         Car expected = new Car();
         expected.setName("Expected car");
         expected.setEngine(testEngine);

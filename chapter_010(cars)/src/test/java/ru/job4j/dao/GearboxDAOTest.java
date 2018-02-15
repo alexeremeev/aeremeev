@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 /**
  * Gearbox DAO tests.
  * @author aeremeev.
- * @version 1
+ * @version 1.1
  * @since 01.02.2018
  */
 public class GearboxDAOTest {
@@ -24,7 +24,7 @@ public class GearboxDAOTest {
      */
     @Before
     public void clearTable() {
-        dao.executeQuery("Truncate table gearbox restart identity cascade");
+        dao.executeQuery("Truncate table gearbox restart identity and commit no check");
     }
     /**
      * Test of adding new gearbox.

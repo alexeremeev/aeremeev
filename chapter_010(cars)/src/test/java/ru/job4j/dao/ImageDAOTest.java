@@ -10,7 +10,12 @@ import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-
+/**
+ * Image DAO tests HSQL DB based.
+ * @author aeremeev.
+ * @version 1.1
+ * @since 01.02.2018
+ */
 public class ImageDAOTest {
 
     private DAOInterface<Image> dao = new GenericDAO<>();
@@ -20,7 +25,7 @@ public class ImageDAOTest {
      */
     @Before
     public void clearTable() {
-        dao.executeQuery("Truncate table image restart identity cascade");
+        dao.executeQuery("Truncate table image restart identity and commit no check");
     }
     /**
      * Test of adding new image.

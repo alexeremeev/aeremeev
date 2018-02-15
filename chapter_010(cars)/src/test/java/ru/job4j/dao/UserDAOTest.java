@@ -11,15 +11,21 @@ import java.util.List;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
+/**
+ * User DAO tests HSQL DB based.
+ * @author aeremeev.
+ * @version 1.1
+ * @since 01.02.2018
+ */
 public class UserDAOTest {
 
-    private DAOInterface<User> dao = new GenericDAO<>();
+    private UserDAO dao = new UserDAO();
     /**
      * Clear table.
      */
     @Before
     public void clearTable() {
-        dao.executeQuery("Truncate table users restart identity cascade");
+        dao.executeQuery("Truncate table users restart identity and commit no check");
     }
     /**
      * Test of adding new user.
@@ -91,8 +97,23 @@ public class UserDAOTest {
         expected.setPassword("pass");
         dao.saveOrUpdate(expected);
 
-        User result = dao.findById(User.class, expected.getId());
+        User result = (User) dao.findById(User.class, expected.getId());
 
         assertThat(result, is(expected));
+    }
+    /**
+     * Test of checking user credentials.
+     */
+    @Test
+    public void whenUserInputCorrectLoginPasswordThenReturnNotNullUser() {
+        User expected = new User();
+        expected.setLogin("login");
+        expected.setPassword("password");
+        dao.saveOrUpdate(expected);
+
+        User credential = dao.isCredential("login", "password");
+
+        assertThat(credential, is(expected));
+
     }
 }

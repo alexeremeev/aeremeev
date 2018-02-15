@@ -11,9 +11,9 @@ import java.util.List;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 /**
- * Engine DAO tests.
+ * Engine DAO tests HSQL DB based.
  * @author aeremeev.
- * @version 1
+ * @version 1.1
  * @since 01.02.2018
  */
 public class EngineDAOTest {
@@ -25,7 +25,7 @@ public class EngineDAOTest {
      */
     @Before
     public void clearTable() {
-        dao.executeQuery("Truncate table engine restart identity cascade");
+        dao.executeQuery("Truncate table engine restart identity and commit no check");
     }
     /**
      * Test of adding new engine.
