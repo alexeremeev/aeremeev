@@ -14,7 +14,7 @@
         <constructor-arg name="storage" ref="memory"></constructor-arg>
     </bean>
     <bean id="import" class="ru.job4j.springioc.ImportUser">
-        <constructor-arg name="storage" ref="jdbc"/>
+        <constructor-arg name="storage" ref="memory"/>
     </bean>
 
 </beans>

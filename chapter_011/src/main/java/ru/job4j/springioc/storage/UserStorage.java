@@ -7,7 +7,7 @@ import ru.job4j.springioc.model.User;
 /**
  * Userstorage.
  * @author aeremeev.
- * @version 1
+ * @version 1.1
  * @since 15.02.2018
  */
 @Component
