@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="connection.url">jdbc:postgresql://localhost:5432/car_catalog</property>
+        <property name="connection.username">postgres</property>
+        <property name="connection.password">root</property>
+        <property name="dialect">org.hibernate.dialect.PostgreSQL95Dialect</property>
+        <property name="current_session_context_class">thread</property>
+        <property name="show_sql">true</property>
+        <property name="hibernate.enable_lazy_load_no_trans">true</property>
+        <!--DB schema will be updated if needed -->
+        <!--<property name="hbm2ddl.auto">update</property>-->
+        <mapping resource="ru/job4j/springmvc/models/Transmission.hbm.xml"/>
+        <mapping resource="ru/job4j/springmvc/models/Gearbox.hbm.xml"/>
+        <mapping resource="ru/job4j/springmvc/models/Engine.hbm.xml"/>
+        <mapping resource="ru/job4j/springmvc/models/Body.hbm.xml"/>
+        <mapping resource="ru/job4j/springmvc/models/Model.hbm.xml"/>
+        <mapping resource="ru/job4j/springmvc/models/Image.hbm.xml"/>
+        <mapping resource="ru/job4j/springmvc/models/Order.hbm.xml"/>
+        <mapping resource="ru/job4j/springmvc/models/Car.hbm.xml"/>
+        <mapping resource="ru/job4j/springmvc/models/User.hbm.xml"/>
+    </session-factory>
+</hibernate-configuration>
