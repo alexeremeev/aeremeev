@@ -5,6 +5,10 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 /**
  * HibernateUtil singleton.
@@ -12,7 +16,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
  * @version 1
  * @since 28.01.2018
  */
-
+@Component
 public class HibernateUtil {
 
     private static SessionFactory sessionFactory;
@@ -22,6 +26,7 @@ public class HibernateUtil {
     private HibernateUtil() {
     }
 
+    @PostConstruct
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             try {
@@ -39,6 +44,7 @@ public class HibernateUtil {
         return sessionFactory;
     }
 
+    @PreDestroy
     public static void shutdown() {
         if (registry != null) {
             StandardServiceRegistryBuilder.destroy(registry);
