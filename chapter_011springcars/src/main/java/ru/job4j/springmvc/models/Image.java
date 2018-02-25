@@ -1,5 +1,6 @@
 package ru.job4j.springmvc.models;
 
+import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -9,12 +10,16 @@ import java.util.Objects;
  * @version 1
  * @since 04.02.2018
  */
+@Entity(name = "image")
 public class Image {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private byte[] data;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_id")
     private Order order;
 
     public int getId() {

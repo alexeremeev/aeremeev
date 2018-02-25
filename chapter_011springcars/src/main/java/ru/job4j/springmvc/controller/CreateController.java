@@ -2,13 +2,16 @@ package ru.job4j.springmvc.controller;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.JsonNodeFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.job4j.springmvc.dao.GenericDAO;
 import ru.job4j.springmvc.models.Car;
 import ru.job4j.springmvc.models.Order;
 import ru.job4j.springmvc.models.User;
+import ru.job4j.springmvc.repo.CarRepository;
+import ru.job4j.springmvc.repo.OrderRepository;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -19,7 +22,9 @@ import java.text.SimpleDateFormat;
 @RestController
 public class CreateController {
 
-    private GenericDAO dao = new GenericDAO();
+    private ApplicationContext context = new ClassPathXmlApplicationContext("spring-data-config.xml");
+    private CarRepository carRepo = context.getBean(CarRepository.class);
+    private OrderRepository orderRepo = context.getBean(OrderRepository.class);
 
     @PostMapping(value = "/create", produces = "application/json;charset=UTF-8")
     public String addNewOrder(@RequestParam("release") String releaseDate,
@@ -42,7 +47,7 @@ public class CreateController {
             if (carId != -1) {
                 car.setId(carId);
             }
-            new GenericDAO<>().saveOrUpdate(car);
+            carRepo.save(car);
 
             User user = new User();
             user.setId(userId);
@@ -55,7 +60,7 @@ public class CreateController {
             if (orderId > 0) {
                 order.setId(orderId);
             }
-            dao.saveOrUpdate(order);
+            orderRepo.save(order);
             orderId = order.getId();
             session.setAttribute("currentOrder", orderId);
         }

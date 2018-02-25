@@ -1,5 +1,6 @@
 package ru.job4j.springmvc.models;
 
+import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
 
@@ -9,10 +10,16 @@ import java.util.Set;
  * @version 1
  * @since 05.02.2018
  */
+@Entity(name = "users")
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String login;
     private String password;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
     private Set<Order> orders;
 
     public int getId() {

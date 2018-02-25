@@ -1,5 +1,6 @@
 package ru.job4j.springmvc.models;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -8,10 +9,14 @@ import java.util.Objects;
  * @version 1
  * @since 01.02.2018
  */
+@Entity(name = "transmission")
 public class Transmission {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "drive")
     private String name;
 
     public int getId() {

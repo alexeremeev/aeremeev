@@ -8,15 +8,17 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.FileCleanerCleanup;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileCleaningTracker;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import ru.job4j.springmvc.dao.GenericDAO;
 import ru.job4j.springmvc.models.Image;
 import ru.job4j.springmvc.models.Order;
+import ru.job4j.springmvc.repo.ImageRepository;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -28,14 +30,15 @@ import java.util.List;
 @RestController
 public class ImageController {
 
-    private GenericDAO dao = new GenericDAO();
+    private ApplicationContext appContext = new ClassPathXmlApplicationContext("spring-data-config.xml");
+    private ImageRepository imagesRepo = appContext.getBean(ImageRepository.class);
 
     @GetMapping(value = "/image", produces = "application/json;charset=UTF-8")
     public String getOrderImages(@RequestParam String order) {
         JsonArray array = new JsonArray();
         int orderID = Integer.valueOf(order);
-        Order requestedOrder = (Order) dao.findById(Order.class, orderID);
-        for (Image image:requestedOrder.getImages()) {
+        List<Image> images = imagesRepo.findByOrderId(orderID);
+        for (Image image:images) {
             array.add(String.format("data:image/jpeg;base64,%s", DatatypeConverter.printBase64Binary(image.getData())));
         }
         return array.toString();
@@ -67,7 +70,7 @@ public class ImageController {
                     Image image = new Image();
                     image.setData(imageData);
                     image.setOrder(order);
-                    dao.saveOrUpdate(image);
+                    imagesRepo.save(image);
                 }
                 object.addProperty("success", true);
             } catch (FileUploadException fue) {

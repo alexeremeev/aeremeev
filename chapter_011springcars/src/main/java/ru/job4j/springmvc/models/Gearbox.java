@@ -1,5 +1,6 @@
 package ru.job4j.springmvc.models;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -8,10 +9,14 @@ import java.util.Objects;
  * @version 1
  * @since 01.02.2018
  */
+@Entity(name = "gearbox")
 public class Gearbox {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "shift")
     private String name;
 
     public int getId() {

@@ -4,12 +4,14 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.job4j.springmvc.dao.GenericDAO;
 import ru.job4j.springmvc.models.Order;
+import ru.job4j.springmvc.repo.OrderRepository;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,6 +19,9 @@ import java.io.IOException;
 
 @RestController
 public class EditController {
+
+    private ApplicationContext context = new ClassPathXmlApplicationContext("spring-data-config.xml");
+    private OrderRepository orderRepo = context.getBean(OrderRepository.class);
 
     @GetMapping(value = "/edit", produces = "application/json;charset=UTF-8")
     public String getExistingOrder(HttpSession session) throws IOException {
@@ -29,7 +34,7 @@ public class EditController {
             if (success) {
                 userId = (int) session.getAttribute("user_id");
             }
-            node.put("orderProperties", orderToNode(new GenericDAO<Order>().findById(Order.class, orderId)));
+            node.put("orderProperties", orderToNode(orderRepo.findById(orderId).get()));
         }
         node.put("currentUser", userId);
         node.put("order", orderId);

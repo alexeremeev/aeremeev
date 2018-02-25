@@ -1,14 +1,19 @@
 package ru.job4j.springmvc.controller;
 
 import com.google.gson.JsonObject;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.springmvc.dao.UserDAO;
 import ru.job4j.springmvc.models.User;
+import ru.job4j.springmvc.repo.UserRepository;
 
 import javax.servlet.http.HttpSession;
 
 @RestController
 public class LoginController {
+
+    private ApplicationContext context = new ClassPathXmlApplicationContext("spring-data-config.xml");
+    private UserRepository repository = context.getBean(UserRepository.class);
 
     @GetMapping(value = "/login", produces = "application/json")
     public String sessionStatus(HttpSession session) {
@@ -29,20 +34,20 @@ public class LoginController {
 
         JsonObject object = new JsonObject();
         object.addProperty("success", false);
-        UserDAO dao = new UserDAO();
+
         User user;
 
         if (isRegister) {
             user = new User();
             user.setLogin(login);
             user.setPassword(password);
-            dao.saveOrUpdate(user);
+            repository.save(user);
             if (user.getId() > 0) {
                 session.setAttribute("success", true);
                 object.addProperty("success", true);
             }
         } else {
-            user = dao.isCredential(login, password);
+            user = repository.findByLoginAndPassword(login, password);
             if (user != null) {
                 session.setAttribute("success", true);
                 object.addProperty("success", true);

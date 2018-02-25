@@ -1,5 +1,6 @@
 package ru.job4j.springmvc.models;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
@@ -11,15 +12,30 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @version 1
  * @since 05.02.2018
  */
+@Entity
+@Table(name = "orders")
 public class Order {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "car_id")
     private Car car;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order", fetch = FetchType.EAGER)
     private List<Image> images = new CopyOnWriteArrayList<>();
     private int price;
     private int mileage;
     private Timestamp releaseDate;
     private boolean sold;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Column(name = "order_date")
     private Timestamp orderDate;
 
     public Integer getId() {

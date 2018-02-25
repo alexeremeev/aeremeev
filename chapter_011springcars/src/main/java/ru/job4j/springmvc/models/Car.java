@@ -1,5 +1,6 @@
 package ru.job4j.springmvc.models;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -8,20 +9,33 @@ import java.util.Objects;
  * @version 1
  * @since 01.02.2018
  */
+@Entity(name = "car")
 public class Car {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "transmission_id")
     private Transmission transmission;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "gearbox_id")
     private Gearbox gearbox;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "engine_id")
     private Engine engine;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "body_id")
     private Body body;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "model_id")
     private Model model;
 
     public Car() {

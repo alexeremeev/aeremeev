@@ -1,5 +1,9 @@
 package ru.job4j.springmvc.models;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 /**
@@ -8,9 +12,12 @@ import java.util.Objects;
  * @version 1
  * @since 04.02.2018
  */
+@Entity(name = "body")
 public class Body {
 
-    int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     private String name;
 
