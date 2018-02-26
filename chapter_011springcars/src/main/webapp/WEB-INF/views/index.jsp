@@ -32,7 +32,7 @@
             <form id="authorisation">
                 <div class="input-group">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                    <input id="login" type="text" class="form-control" name="login" placeholder="Login" required autofocus>
+                    <input id="username" type="text" class="form-control" name="username" placeholder="Login" required autofocus>
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
@@ -46,9 +46,9 @@
             <div id="info_success_auth" hidden>
                 <h3><span class="label label-info">Вход выполнен</span></h3>
                 <br>
-                <%--<a href="<spring:url value= "/create"/>">--%>
+                <%--&lt;%&ndash;<a href="<spring:url value= "/create"/>">&ndash;%&gt;--%>
                     <button type="button" class="btn btn-link" id="move-order-page" hidden>Добавить объявление</button>
-                <%--</a>--%>
+                <%--&lt;%&ndash;</a>&ndash;%&gt;--%>
             </div>
         </div>
 

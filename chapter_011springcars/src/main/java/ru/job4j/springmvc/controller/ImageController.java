@@ -10,6 +10,10 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileCleaningTracker;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,11 +51,13 @@ public class ImageController {
     @PostMapping(value = "/image", produces = "application/json;charset=UTF-8")
     public String uploadOrderImages(HttpServletRequest req, HttpSession session) {
         boolean isMultipartContent = ServletFileUpload.isMultipartContent(req);
-        Integer userId = (int) session.getAttribute("user_id");
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        String login = ((UserDetails) authentication.getPrincipal()).getUsername();
         Integer orderId = (int) session.getAttribute("currentOrder");
         JsonObject object = new JsonObject();
         object.addProperty("success", false);
-        if (isMultipartContent && userId != -1 && orderId != -1) {
+        if (isMultipartContent && login != null && orderId != -1) {
             DiskFileItemFactory factory = new DiskFileItemFactory();
             ServletContext context = ((ServletRequestAttributes) RequestContextHolder.
                     getRequestAttributes()).getRequest().getServletContext();

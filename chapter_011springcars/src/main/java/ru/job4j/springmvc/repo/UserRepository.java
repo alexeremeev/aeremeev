@@ -4,5 +4,5 @@ import org.springframework.data.repository.CrudRepository;
 import ru.job4j.springmvc.models.User;
 
 public interface UserRepository extends CrudRepository<User, Integer> {
-    User findByLoginAndPassword(String login, String password);
+    User findByLogin(String login);
 }

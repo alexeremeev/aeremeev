@@ -1,63 +1,39 @@
-var login_result;
+var login_result = false;
 var CONTEXT_PATH = $('#contextPathHolder').attr('data-contextPath');
 
 $(document).ready(function () {
 
     validateSession();
+    viewOrders();
     updateTable();
 
     $("#auth-btn").click(function () {
-        var login = $("#login");
-        var password = $("#password");
-
-        if(login != '' && password != ''){
+        var data = 'username=' + $('#username').val() + '&password=' + $('#password').val();
+        console.log('data', data);
             $.ajax({
                 url: "login",
-                method: "post",
-                data: {
-                    'login': login.val(),
-                    'password': password.val(),
-                    'register' : false},
-                complete: function (data) {
-                    var result = JSON.parse(data.responseText);
-                    login_result = Boolean(result.success);
-                    if (login_result) {
-                         viewOrders();
-                         updateTable();
-                    }
-                    else {
-                        alert("Invalid login / password");
-                    }
-                }
+                type: "post",
+                timeout: 1000,
+                data: data})
+                .done(function (data, textStatus, jqXHR) {
+                    console.log('data', data);
+                    console.log('status', textStatus);
+                    console.log('xhr', jqXHR);
+                    login_result = true;
+                    viewOrders();
+                    updateTable();
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log('data', errorThrown);
+                console.log('status', textStatus);
+                console.log('xhr', jqXHR);
+                alert('Fail!');
             });
-        }
+
     });
 
     $("#add-user-btn").click(function () {
-        var login = $("#login");
-        var password = $("#password");
-
-        if(login != '' && password != ''){
-            $.ajax({
-                url: "login",
-                method: "post",
-                data: {
-                    'login': login.val(),
-                    'password': password.val(),
-                    'register' : true},
-                complete: function (data) {
-                    var result = JSON.parse(data.responseText);
-                    login_result = Boolean(result.success);
-                    if (login_result) {
-                         viewOrders();
-                         updateTable();
-                    }
-                    else {
-                        alert("Error. Try again");
-                    }
-                }
-            });
-        }
+        alert('Sorry. Registrations are closed for short period...');
+        //will be added
     });
 
     $("#move-order-page").click(function () {
@@ -81,7 +57,6 @@ $(document).ready(function () {
     });
 
 });
-
 
 function validateSession() {
     $.ajax({
@@ -114,7 +89,7 @@ function updateTable(){
             if(result.orders != ''){
                 var optional = "";
                 for (var i = 0; i != orders.length; ++i) {
-                    var userOrder = orders[i].userId;
+                    var userOrder = orders[i].userName;
                     var flag = (orders[i].sold === true);
                     optional += "<tr>";
                     if (flag) {
@@ -170,7 +145,7 @@ function filterTable(){
                 var optional = "";
                 for (var i = 0; i != orders.length; ++i) {
 
-                    var userOrder = orders[i].userId;
+                    var userOrder = orders[i].userName;
                     console.log(userOrder);
                     var flag = (orders[i].sold === true);
                     optional += "<tr>";

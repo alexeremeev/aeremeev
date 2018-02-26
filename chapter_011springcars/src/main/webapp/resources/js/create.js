@@ -1,4 +1,3 @@
-var login_result = false;
 var order_id = -1;
 var carId = -1;
 
@@ -9,7 +8,6 @@ $(document).ready(function () {
     fillParts("Engine", "engine");
     fillParts("Model", "model");
     fillParts("Gearbox", "gearbox");
-    validateSession();
     fillExistOrder();
 
     $("#add-order-btn").click(function () {
@@ -35,26 +33,24 @@ $(document).ready(function () {
             'sold' : sold
         };
 
-        if(login_result){
-            $.ajax({
-                url: "create",
-                method: "post",
-                datatype : 'JSON',
-                data: {
-                    'order' : JSON.stringify(order),
-                    'car'   : JSON.stringify(car),
-                    'release' : release.val(),
-                    'carId' : carId
-                },
-                complete: function (data) {
-                    order_id  = JSON.parse(data.responseText);
-                    if (order_id != -1) {
-                        alert("Объявление добавлено. Пожалуйста добавьте фотографии машины.");
-                        $('#add-order-btn').prop('disabled',true);
-                    }
+        $.ajax({
+            url: "create",
+            method: "post",
+            datatype : 'JSON',
+            data: {
+                'order' : JSON.stringify(order),
+                'car'   : JSON.stringify(car),
+                'release' : release.val(),
+                'carId' : carId
+            },
+            complete: function (data) {
+                order_id  = JSON.parse(data.responseText);
+                if (order_id != -1) {
+                    alert("Объявление добавлено. Пожалуйста добавьте фотографии машины.");
+                    $('#add-order-btn').prop('disabled',true);
                 }
-            });
-        }
+            }
+        });
     });
 
 
@@ -100,19 +96,6 @@ function fillParts(partName, tableName) {
                 var dropdownMenu = document.getElementById(tableName);
                 dropdownMenu.innerHTML = optional;
             }
-        }
-    });
-}
-
-function validateSession() {
-    $('#add-order-btn').prop('disabled',true);
-    $.ajax({
-        url: "login",
-        method: "get",
-        complete: function (data) {
-            var result = JSON.parse(data.responseText);
-            login_result = Boolean(result.success);
-            $('#add-order-btn').prop('disabled', !login_result);
         }
     });
 }

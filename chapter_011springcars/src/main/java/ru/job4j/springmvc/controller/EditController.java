@@ -6,6 +6,10 @@ import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,18 +29,19 @@ public class EditController {
 
     @GetMapping(value = "/edit", produces = "application/json;charset=UTF-8")
     public String getExistingOrder(HttpSession session) throws IOException {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode node = mapper.getNodeFactory().objectNode();
         int orderId = (int) session.getAttribute("currentOrder");
-        boolean success = (boolean) session.getAttribute("success");
-        int userId = -1;
+        String login = "-=StubLogin-===AeX7y";
+        if (authentication != null) {
+            login = ((UserDetails) authentication.getPrincipal()).getUsername();
+        }
         if (orderId != -1) {
-            if (success) {
-                userId = (int) session.getAttribute("user_id");
-            }
             node.put("orderProperties", orderToNode(orderRepo.findById(orderId).get()));
         }
-        node.put("currentUser", userId);
+        node.put("currentUser", login);
         node.put("order", orderId);
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
     }
@@ -62,7 +67,7 @@ public class EditController {
         node.put("engineId", order.getCar().getEngine().getId());
         node.put("gearboxId", order.getCar().getGearbox().getId());
         node.put("release", String.format("%1$TF", order.getReleaseDate()));
-        node.put("userId", order.getUser().getId());
+        node.put("userName", order.getUser().getLogin());
         result.add(node);
         return result;
     }

@@ -19,7 +19,7 @@ public class ListToJson {
             object.addProperty("carName", order.getCar().getName());
             object.addProperty("carId", order.getCar().getId());
             object.addProperty("date", String.format("%1$TY", order.getReleaseDate()));
-            object.addProperty("userId", order.getUser().getId());
+            object.addProperty("userName", order.getUser().getLogin());
             array.add(object);
         }
         return array;

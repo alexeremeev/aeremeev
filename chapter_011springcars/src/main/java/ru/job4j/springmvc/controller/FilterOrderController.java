@@ -3,6 +3,10 @@ package ru.job4j.springmvc.controller;
 import com.google.gson.JsonObject;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,17 +27,12 @@ public class FilterOrderController {
     @GetMapping(value = "/filter", produces = "application/json;charset=UTF-8")
     public String doGet(@RequestParam String isEmpty,
                         @RequestParam String model,
-                        @RequestParam String orderDate,
-                        HttpSession session) throws IOException {
+                        @RequestParam String orderDate) throws IOException {
         JsonObject json = new JsonObject();
-        Integer userId = -1;
-        if (session != null) {
-            boolean success = (boolean) session.getAttribute("success");
-            if (success) {
-                userId = (int) session.getAttribute("user_id");
-            }
-    }
-        json.addProperty("currentUser", userId);
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        String login = authentication.getName();
+        json.addProperty("currentUser", login);
         List<Order> requestedOrders = repository.findByImagesSizeAndCarModelNameAndOrderDateGreaterThan(
                 Integer.valueOf(isEmpty), "%" + model + "%", new Timestamp(Long.valueOf(orderDate)));
         json.addProperty("orders", ListToJson.listToJsonArray(requestedOrders).toString());
