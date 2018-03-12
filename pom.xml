@@ -128,7 +128,6 @@
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>2.4.0</version>
-            <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
         <dependency>
@@ -325,6 +324,7 @@
         <module>chapter_011</module>
         <module>chapter_011springcars</module>
         <module>chapter_011bootcars</module>
+        <module>chapter_012</module>
         <module>control_tasks</module>
         <module>smallrestservice</module>
         <module>shortener</module>
