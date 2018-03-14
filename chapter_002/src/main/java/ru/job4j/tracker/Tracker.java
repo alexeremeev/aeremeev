@@ -1,25 +1,23 @@
 package ru.job4j.tracker;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Class Tracker - система учета заявок.
  */
 public class Tracker {
     /**
-     * Массив заявок.
+     * Item List.
      */
-    private Item[] items = new Item[100];
-    /**
-     * Начальный индекс массива для заполнения.
-     */
-    private int position = 0;
+    private List<Item> items = new ArrayList<>();
     /**
      * Константа Random RN для генерации уникальных id.
      */
-    //CHECKSTYLE.OFF
     private final static Random RN = new Random();
-    //CHECKSTYLE.ON
     /**
      * Метод добавления заявки в систему.
      * @param item заявка.
@@ -27,7 +25,7 @@ public class Tracker {
      */
     public Item add(Item item) {
         item.setId(this.generateId());
-        this.items[position++] = item;
+        this.items.add(item);
         return item;
     }
 
@@ -36,12 +34,7 @@ public class Tracker {
      * @param item заявка.
      */
     public void update(Item item) {
-        for (int index = 0; index != position; index++) {
-            if (items[index].getId().equals(item.getId())) {
-                items[index] = item;
-                break;
-            }
-        }
+        this.items.replaceAll(swap -> swap.getId().equals(item.getId()) ? item : swap);
     }
 
     /**
@@ -49,25 +42,15 @@ public class Tracker {
      * @param item заявка.
      */
     public void delete(Item item) {
-        for (int index = 0; index != position; index++) {
-            if (items[index].getId().equals(item.getId())) {
-                System.arraycopy(items, index + 1, items, index, position - index - 1);
-                items[position] = null;
-                position--;
-            }
-        }
+        this.items.removeIf(search -> search.getId().equals(item.getId()));
     }
 
     /**
      * Метод поиска всех добавленных заявок.
      * @return массив добавленны заявок.
      */
-    public Item[] findAll() {
-        Item[] result = new Item[this.position];
-        for (int index = 0; index != position; index++) {
-            result[index] = items[index];
-        }
-        return result;
+    public List<Item> findAll() {
+        return this.items.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     /**
@@ -75,20 +58,8 @@ public class Tracker {
      * @param name имя заявки.
      * @return массив всех заявок с указанным именем.
      */
-    public Item[] findByName(String name) {
-        Item[] swap = new Item[this.position];
-        int index = 0;
-        for (Item item : items) {
-            if (item != null && item.getName().equals(name)) {
-                swap[index] = item;
-                index++;
-            }
-        }
-        Item[] result = new Item[index];
-        for (int i = 0; i != index; i++) {
-            result[i] = swap[i];
-        }
-        return result;
+    public List<Item> findByName(String name) {
+        return this.items.stream().filter(item -> item.getName().equals(name)).collect(Collectors.toList());
     }
 
     /**
@@ -97,14 +68,7 @@ public class Tracker {
      * @return заявка.
      */
     public Item findById(String id) {
-        Item result = null;
-        for (Item item : items) {
-            if (item != null && item.getId().equals(id)) {
-                result = item;
-                break;
-            }
-        }
-        return result;
+        return this.items.stream().filter(item -> item.getId().equals(id)).findFirst().get();
     }
 
     /**

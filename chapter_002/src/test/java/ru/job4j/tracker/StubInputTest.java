@@ -2,6 +2,10 @@ package ru.job4j.tracker;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -17,7 +21,7 @@ public class StubInputTest {
         Tracker tracker = new Tracker();
         Input input = new StubInput(new String[]{"0", "test", "desc", "6"});
         new StartUi(input, tracker).init();
-        assertThat(tracker.findAll()[0].getName(), is("test"));
+        assertThat(tracker.findAll().get(0).getName(), is("test"));
     }
 
     /**
@@ -39,7 +43,7 @@ public class StubInputTest {
         Tracker tracker = new Tracker();
         Input input = new StubInput(new String[]{"0", "first", "first desc", "0", "second", "second desc", "1", "6"});
         new StartUi(input, tracker).init();
-        assertThat(tracker.findAll()[1].getName(), is("second"));
+        assertThat(tracker.findAll().get(1).getName(), is("second"));
     }
 
     /**
@@ -52,7 +56,7 @@ public class StubInputTest {
         Item second = tracker.add(new Item("second", "second desc", System.currentTimeMillis()));
         Item third = tracker.add(new Item("third", "third desc", System.currentTimeMillis()));
         Input input = new StubInput(new String[]{"3", second.getId(), "6"});
-        Item[] expected = {first, third};
+        List<Item> expected = new ArrayList<>(Arrays.asList(first, third));
         new StartUi(input, tracker).init();
         assertThat(tracker.findAll(), is(expected));
     }
@@ -66,7 +70,7 @@ public class StubInputTest {
         Item second = tracker.add(new Item("first", "second desc", System.currentTimeMillis()));
         Input input = new StubInput(new String[]{"5", "first", "6"});
         new StartUi(input, tracker).init();
-        assertThat(tracker.findByName("first")[1].getName(), is("first"));
+        assertThat(tracker.findByName("first").get(1).getName(), is("first"));
     }
     /**
      * Тест на поиск по ID.
