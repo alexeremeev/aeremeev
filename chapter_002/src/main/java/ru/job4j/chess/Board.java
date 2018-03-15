@@ -1,4 +1,7 @@
 package ru.job4j.chess;
+
+import java.util.stream.IntStream;
+
 /**
  * class Board - описание шахматной доски и ее методов.
  */
@@ -10,14 +13,14 @@ public class Board {
     /**
      * Счетчик фигур в массиве.
      */
-    private int coutner = 0;
+    private int counter = 0;
 
     /**
      * Добавление новой фигуры на доску (в массив).
      * @param figure фигура.
      */
     public void put(Figure figure) {
-        this.figures[coutner++] = figure;
+        this.figures[this.counter++] = figure;
     }
 
     /**
@@ -26,20 +29,11 @@ public class Board {
      * @return номер счетчика найденной фигуры в массиве figures[], если не найдено, то -1.
      */
     public int isOnCell(Cell source) {
-        int occupied = -1;
         int xSource = source.getxAxis();
         int ySource = source.getyAxis();
-        for (int index = 0; index != figures.length; index++) {
-            if (figures[index] != null) {
-                int xFigure = figures[index].occupy().getxAxis();
-                int yFigure = figures[index].occupy().getyAxis();
-                if (xSource == xFigure && ySource == yFigure) {
-                    occupied = index;
-                    break;
-                }
-            }
-        }
-        return occupied;
+        return IntStream.range(0, this.figures.length).
+                filter(i -> this.figures[i] != null && this.figures[i].occupy().getxAxis() == xSource &&
+                        this.figures[i].occupy().getyAxis() == ySource).findFirst().orElse(-1);
     }
 
     /**
@@ -57,13 +51,13 @@ public class Board {
         if (isOnCell(source) == -1) {
             throw new FigureNotFoundException("Figure not found in source cell!");
         }
-        Cell[] path = figures[findFigure].way(dist);
+        Cell[] path = this.figures[findFigure].way(dist);
         for (Cell cell : path) {
             if (isOnCell(cell) != -1) {
                 throw new OccupiedWayException("Figure's path is blocked by another figure!");
             }
         }
-        figures[findFigure] = figures[findFigure].clone(dist);
+        this.figures[findFigure] = this.figures[findFigure].clone(dist);
         return true;
     }
 
