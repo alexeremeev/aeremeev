@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.IntStream;
 
 /**
  * class Benchmark - тестрирование производительности коллеций.
@@ -20,10 +21,7 @@ public class Benchmark {
      */
     public long add(Collection<String> collection, int amount) {
         long start = System.currentTimeMillis();
-
-        for (int index = 0; index != amount; index++) {
-            collection.add(Integer.toString(index));
-        }
+        IntStream.range(0, amount).forEach(value -> collection.add(Integer.toString(value)));
         return System.currentTimeMillis() - start;
     }
     /**
@@ -34,9 +32,7 @@ public class Benchmark {
      */
     public long delete(Collection<String> collection, int amount) {
         long start = System.currentTimeMillis();
-        for (int index = 0; index != amount; index++) {
-            collection.remove(Integer.toString(index));
-        }
+        IntStream.range(0, amount).forEach(value -> collection.remove(Integer.toString(value)));
         return System.currentTimeMillis() - start;
     }
 

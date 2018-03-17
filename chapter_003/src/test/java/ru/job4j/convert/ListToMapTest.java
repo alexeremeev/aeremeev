@@ -4,6 +4,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -23,7 +24,7 @@ public class ListToMapTest {
         User petr = new User(2, "Petr", "Sbp");
         users.add(alex);
         users.add(petr);
-        HashMap<Integer, User> expected = new HashMap<>();
+        Map<Integer, User> expected = new HashMap<>();
         expected.put(1, alex);
         expected.put(2, petr);
         assertThat(listToMap.process(users), is(expected));

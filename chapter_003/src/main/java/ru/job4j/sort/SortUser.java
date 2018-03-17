@@ -3,6 +3,7 @@ package ru.job4j.sort;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * class SortUser - сортировка User.
@@ -14,11 +15,7 @@ public class SortUser {
      * @return TreeSet с отсортированными user.
      */
     public TreeSet<User> sort(List<User> list) {
-        TreeSet<User> set = new TreeSet<>();
-        for (User user: list) {
-            set.add(user);
-        }
-        return set;
+        return new TreeSet<>(list);
     }
 
     /**
@@ -27,14 +24,7 @@ public class SortUser {
      * @return list, с отсортированными по длине имени пользователями.
      */
     public List<User> sortNameLength(List<User> list) {
-        list.sort(
-                new Comparator<User>() {
-                    @Override
-                    public int compare(User o1, User o2) {
-                        return Integer.compare(o1.getName().length(), o2.getName().length());
-                    }
-                }
-        );
+        list.sort(Comparator.comparing(user -> user.getName().length()));
         return list;
     }
 
@@ -44,15 +34,7 @@ public class SortUser {
      * @return ist, с отсортированными по длине имени и возрасту пользователями.
      */
     public List<User> sortByAllFields(List<User> list) {
-        list.sort(
-                new Comparator<User>() {
-                    @Override
-                    public int compare(User o1, User o2) {
-                        int result = Integer.compare(o1.getName().length(), o2.getName().length());
-                        return result != 0 ? result : o1.getAge().compareTo(o2.getAge());
-                    }
-                }
-        );
+        list.sort(Comparator.comparing((User user) -> user.getName().length()).thenComparing(User::getAge));
         return list;
     }
 }
