@@ -4,6 +4,7 @@ package ru.job4j.orderbook;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * class Exchange - разбивает заявки по книгам.
@@ -26,21 +27,15 @@ public class Exchange {
      * @param orders Set заявок.
      */
     public void load(TreeSet<Order> orders) {
-        for (Order order: orders) {
-            String book = order.getBook();
-            if (!this.books.containsKey(book)) {
-                this.books.put(book, new OrderBook(book));
-            }
-            this.books.get(book).addOrder(order);
-        }
+        this.books = orders.stream().collect(Collectors.toMap(
+                Order::getBook, order -> new OrderBook(order.getBook()), (order1, order2) -> order1));
+        orders.forEach(order -> this.books.get(order.getBook()).addOrder(order));
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (String book: new TreeSet<>(this.books.keySet())) {
-            builder.append(books.get(book).toString());
-        }
+        this.books.forEach((book, orderBook) -> builder.append(orderBook.toString()));
         return builder.toString();
     }
 }

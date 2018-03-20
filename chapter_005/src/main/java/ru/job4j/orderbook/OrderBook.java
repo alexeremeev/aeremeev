@@ -1,9 +1,7 @@
 package ru.job4j.orderbook;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -63,30 +61,15 @@ public class OrderBook {
      * @return список заявок на покупку.
      */
     private List<MatchingOrders> bidList() {
-        List<MatchingOrders> result = new LinkedList<>();
-        Iterator<MatchingOrders> it = this.ordersSet.descendingIterator();
-        while (it.hasNext()) {
-            MatchingOrders order = it.next();
-            if (order.volume < 0) {
-                result.add(order);
-            }
-        }
-        return result;
+        return this.ordersSet.stream().sorted(Collections.reverseOrder()).filter(
+                matchingOrders -> matchingOrders.volume <0).collect(Collectors.toList());
     }
     /**
      * Метод создает список всех заявок на продажу.
      * @return список заявок на продажу.
      */
     private List<MatchingOrders> askList() {
-        List<MatchingOrders> result = new LinkedList<>();
-        Iterator<MatchingOrders> it = this.ordersSet.iterator();
-        while (it.hasNext()) {
-            MatchingOrders order = it.next();
-            if (order.volume > 0) {
-                result.add(order);
-            }
-        }
-        return result;
+        return this.ordersSet.stream().filter(matchingOrders -> matchingOrders.volume > 0).collect(Collectors.toList());
     }
     /**
      * Переопределенный toString().
