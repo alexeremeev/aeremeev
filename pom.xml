@@ -325,8 +325,8 @@
         <module>chapter_011springcars</module>
         <module>chapter_011bootcars</module>
         <module>chapter_012</module>
+        <module>chapter_014</module>
         <module>control_tasks</module>
-        <module>smallrestservice</module>
         <module>shortener</module>
     </modules>
 </project>
