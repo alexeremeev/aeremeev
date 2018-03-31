@@ -11,27 +11,27 @@ public class ShuffleSortTest {
 
     @Test
     public void whenSortListViaShuffleThenGetSortedList() {
-        List<User> original = new ArrayList<>(Arrays.asList(new User(5,"Yaroslav"),
+        List<User> original = new ArrayList<>(Arrays.asList(new User(5, "Yaroslav"),
                 new User(1, "Alex"), new User(3, "Sergey"), new User(2, "Dmitriy"),
                 new User(4, "Peter"), new User(0, "Alexander")));
         new Sort<User>().shuffleSort(original);
 
         List<User> expected = new ArrayList<>(Arrays.asList(new User(1, "Alex"),
                 new User(0, "Alexander"), new User(2, "Dmitriy"), new User(4, "Peter"),
-                new User(3, "Sergey"), new User(5,"Yaroslav")));
+                new User(3, "Sergey"), new User(5, "Yaroslav")));
         assertThat(original, is(expected));
     }
 
     @Test
     public void whenSortListViaShakerThenGetSortedList() {
-        List<User> original = new ArrayList<>(Arrays.asList(new User(5,"Yaroslav"),
+        List<User> original = new ArrayList<>(Arrays.asList(new User(5, "Yaroslav"),
                 new User(1, "Alex"), new User(2, "Dmitriy"),
                 new User(4, "Peter"), new User(0, "Alexander"), new User(3, "Sergey")));
         new Sort<User>().shakerSort(original);
 
         List<User> expected = new ArrayList<>(Arrays.asList(new User(1, "Alex"),
                 new User(0, "Alexander"), new User(2, "Dmitriy"), new User(4, "Peter"),
-                new User(3, "Sergey"), new User(5,"Yaroslav")));
+                new User(3, "Sergey"), new User(5, "Yaroslav")));
         assertThat(original, is(expected));
     }
 
@@ -59,8 +59,7 @@ public class ShuffleSortTest {
                 return false;
             }
             User user = (User) o;
-            return id == user.id &&
-                    Objects.equals(name, user.name);
+            return id == user.id && Objects.equals(name, user.name);
         }
 
         @Override

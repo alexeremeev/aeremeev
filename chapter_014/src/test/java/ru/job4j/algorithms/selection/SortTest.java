@@ -10,14 +10,14 @@ import static org.junit.Assert.*;
 public class SortTest {
     @Test
     public void whenSortListViaShuffleThenGetSortedList() {
-        List<User> original = new ArrayList<>(Arrays.asList(new User(5,"Yaroslav"),
+        List<User> original = new ArrayList<>(Arrays.asList(new User(5, "Yaroslav"),
                 new User(1, "Alex"), new User(3, "Sergey"), new User(2, "Dmitriy"),
                 new User(4, "Peter"), new User(0, "Alexander")));
         new Sort<User>().selectionSort(original);
 
         List<User> expected = new ArrayList<>(Arrays.asList(new User(1, "Alex"),
                 new User(0, "Alexander"), new User(2, "Dmitriy"), new User(4, "Peter"),
-                new User(3, "Sergey"), new User(5,"Yaroslav")));
+                new User(3, "Sergey"), new User(5, "Yaroslav")));
         assertThat(original, is(expected));
     }
 
@@ -45,8 +45,7 @@ public class SortTest {
                 return false;
             }
             User user = (User) o;
-            return id == user.id &&
-                    Objects.equals(name, user.name);
+            return id == user.id && Objects.equals(name, user.name);
         }
 
         @Override

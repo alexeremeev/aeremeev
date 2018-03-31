@@ -5,7 +5,7 @@ import java.util.List;
 public class Sort<T extends Comparable<? super T>> {
 
     public void shuffleSort(List<T> list) {
-        for (int i = list.size() - 1; i > 0; i--){
+        for (int i = list.size() - 1; i > 0; i--) {
             for (int j = 0; j < i; j++) {
                 if ((list.get(j).compareTo(list.get(j + 1)) > 0)) {
                     this.swap(j, j + 1, list);
