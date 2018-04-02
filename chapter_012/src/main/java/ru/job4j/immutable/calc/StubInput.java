@@ -10,7 +10,7 @@ public final class StubInput implements Input {
     /**
      * Array of user inputs.
      */
-    private String[] inputs;
+    private final String[] inputs;
     /**
      * Starting index.
      */

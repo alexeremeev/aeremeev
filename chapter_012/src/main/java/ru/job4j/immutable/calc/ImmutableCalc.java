@@ -20,7 +20,7 @@ public final class ImmutableCalc {
      * @param menu menu.
      * @param input input interface.
      */
-    public ImmutableCalc(Menu menu, Input input) {
+    public ImmutableCalc(final Menu menu, final Input input) {
         this.menu = menu;
         this.input = input;
     }
@@ -28,7 +28,7 @@ public final class ImmutableCalc {
     /**
      * Initialization.
      */
-    public void init() {
+    public final void init() {
         String userInput;
         do {
             userInput = this.input.ask("Please enter command: ");

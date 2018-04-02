@@ -41,7 +41,7 @@ public final class Menu {
     /**
      * Fill menu with all available actions.
      */
-    public void fillMenu() {
+    public final void fillMenu() {
         this.addMenuItem("+", new Add("Addition"));
         this.addMenuItem("-", new Subtract("Subtraction"));
         this.addMenuItem("*", new Multiply("Multiplication"));
@@ -57,7 +57,7 @@ public final class Menu {
      * @param key key for user input.
      * @param action BaseAction.
      */
-    public void addMenuItem(String key, BaseAction action) {
+    public final void addMenuItem(String key, BaseAction action) {
         this.actionMap.put(key, action);
     }
 
@@ -65,7 +65,7 @@ public final class Menu {
      * Execute menu command.
      * @param message input command.
      */
-    public void compute(String message) {
+    public final void compute(String message) {
         if (this.actionMap.containsKey(message)) {
             this.actionMap.get(message).execute();
         }  else {
@@ -77,7 +77,7 @@ public final class Menu {
      * Get first argument for operation.
      * @return double value of first argument for operation.
      */
-    public double getFirstArg() {
+    public final double getFirstArg() {
         double result;
         if (memory.size() >= 5) {
             result = Double.parseDouble(memory.get(memory.size() - 2));
@@ -92,7 +92,7 @@ public final class Menu {
      * Get second argument for operation.
      * @return double value of second argument for operation.
      */
-    public double getSecondArg() {
+    public final double getSecondArg() {
         double result;
         if (memory.size() >= 5 && memory.get(memory.size() - 1).equals(memory.get(memory.size() - 3))) {
             result = Double.parseDouble(memory.get(memory.size() - 4));
@@ -103,7 +103,7 @@ public final class Menu {
         return result;
     }
 
-    public double getResult() {
+    public final double getResult() {
         double result = 0D;
         if (!memory.isEmpty()) {
             result = Double.parseDouble(this.memory.get(this.memory.size() - 1));
@@ -115,7 +115,7 @@ public final class Menu {
      * Print result of operation.
      * @return print and return result of operation.
      */
-    public void printResult() {
+    public final void printResult() {
         double result = Double.parseDouble(this.memory.get(this.memory.size() - 1));
         System.out.println(String.format("Result: %f", result));
     }
@@ -123,7 +123,7 @@ public final class Menu {
     /**
      * Print error message.
      */
-    public void error() {
+    public final void error() {
         System.out.println("Invalid input, please enter h for help...");
         this.memory.clear();
     }
@@ -138,7 +138,7 @@ public final class Menu {
         }
 
         @Override
-        public void execute() {
+        public final void execute() {
             memory.add("+");
             double result = 0D;
             try {
@@ -161,7 +161,7 @@ public final class Menu {
         }
 
         @Override
-        public void execute() {
+        public final void execute() {
             memory.add("-");
             double result = 0D;
             try {

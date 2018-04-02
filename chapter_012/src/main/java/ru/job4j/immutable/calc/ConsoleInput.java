@@ -12,7 +12,7 @@ public final class ConsoleInput implements Input {
     /**
      * Scanner.
      */
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     /**
      * Returns string from user input.

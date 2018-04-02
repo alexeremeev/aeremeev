@@ -2,21 +2,21 @@ package ru.job4j.immutable.calc;
 
 public final class Calculator {
 
-    public double add(double first, double second) {
+    public final double add(final double first, final double second) {
         return first + second;
     }
 
-    public double subtract(double first, double second) {
+    public final double subtract(final double first, final double second) {
         return first - second;
     }
 
 
-    public double div(double first, double second) {
+    public final double div(final double first, final double second) {
         return first / second;
     }
 
 
-    public double multiple(double first, double second) {
+    public final double multiple(final double first, final double second) {
         return first * second;
     }
 
