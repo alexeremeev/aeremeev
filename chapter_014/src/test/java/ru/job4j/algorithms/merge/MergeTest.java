@@ -24,6 +24,15 @@ public class MergeTest {
         assertThat(original, is(expected));
     }
 
+    @Test
+    public void whenUseIterativeMergeSortThenGetSortedList() {
+        List<Integer> original = new ArrayList<>(Arrays.asList(1, -1, 3, 989, 2343, 11, 334, -111, 2));
+        new Merge<Integer>().iterativeMergeSort(original);
+        List<Integer> expected = new ArrayList<>(Arrays.asList(-111, -1, 1, 2, 3, 11, 334, 989, 2343));
+
+        assertThat(original, is(expected));
+    }
+
     private class User implements Comparable<User> {
 
         private int id;
