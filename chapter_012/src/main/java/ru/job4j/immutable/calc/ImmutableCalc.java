@@ -41,11 +41,11 @@ public final class ImmutableCalc {
      * @param args args.
      */
     public static void main(String[] args) {
-        Calculator calculator = new Calculator();
-        Input input = new ConsoleInput();
-        Menu menu = new Menu(input, calculator);
+        final Calculator calculator = new Calculator();
+        final Input input = new ConsoleInput();
+        final Menu menu = new Menu(input, calculator);
         menu.fillMenu();
-        ImmutableCalc intCalc = new ImmutableCalc(menu, input);
+        final ImmutableCalc intCalc = new ImmutableCalc(menu, input);
         menu.compute("h");
         intCalc.init();
     }
