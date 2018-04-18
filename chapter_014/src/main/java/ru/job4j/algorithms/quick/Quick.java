@@ -9,9 +9,7 @@ public class Quick<T extends Comparable<? super T>> {
     }
 
     private void recursiveQuickSort(List<T> list, int left, int right) {
-        if (right - left <= 0) {
-            return;
-        } else {
+        if (right - left > 0) {
             T anchor = list.get(right);
             int partition = this.sliceList(list, left, right, anchor);
             recursiveQuickSort(list, left, partition - 1);
