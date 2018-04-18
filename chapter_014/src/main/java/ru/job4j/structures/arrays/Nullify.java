@@ -13,7 +13,7 @@ public class Nullify {
         }
     }
 
-    public void nullify(int row, int col, int[][] original, boolean[][] nullified){
+    public void nullify(int row, int col, int[][] original, boolean[][] nullified) {
         for (int i = 0; i != original.length; i++) {
             if (original[row][i] != 0 && !nullified[row][i]) {
                 original[row][i] = 0;
