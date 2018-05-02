@@ -242,6 +242,30 @@ public class SimpleLinkedList<E extends Comparable<? super E>> implements Simple
         }
     }
 
+    public SimpleLinkedList<Integer> sumTwoList(SimpleLinkedList<Integer> first, SimpleLinkedList<Integer> second) {
+        SimpleLinkedList<Integer> result = new SimpleLinkedList<>();
+        Integer carry = 0;
+        Integer sum;
+        Node<Integer> firstNode = (Node<Integer>) first.head;
+        Node<Integer> secondNode = (Node<Integer>) second.head;
+        while (firstNode != null || secondNode != null) {
+            sum = carry + (firstNode != null ? firstNode.element : 0) + (secondNode != null ? secondNode.element : 0);
+            carry = sum >= 10 ? 1 : 0;
+            sum = sum % 10;
+            result.add(sum);
+            if (firstNode != null) {
+                firstNode = firstNode.next;
+            }
+            if (secondNode != null) {
+                secondNode = secondNode.next;
+            }
+        }
+        if (carry > 0) {
+            result.add(carry);
+        }
+        return result;
+    }
+
     /**
      * Итератор.
      * @return итератор.

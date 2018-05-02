@@ -68,4 +68,28 @@ public class SimpleLinkedListTest {
 
         assertThat(original, is(expected));
     }
+
+    @Test
+    public void whenSumTwoLinkedListsThenGetResultList() {
+        SimpleLinkedList<Integer> first = new SimpleLinkedList<>();
+        first.add(1);
+        first.add(2);
+        first.add(3);
+        first.add(2);
+        first.add(1);
+        SimpleLinkedList<Integer> second = new SimpleLinkedList<>();
+        second.add(7);
+        second.add(6);
+        second.add(8);
+
+        SimpleLinkedList<Integer> result = first.sumTwoList(first, second);
+
+        SimpleLinkedList<Integer> expected = new SimpleLinkedList<>();
+        expected.add(8);
+        expected.add(8);
+        expected.add(1);
+        expected.add(3);
+        expected.add(1);
+        assertThat(result, is(expected));
+    }
 }
