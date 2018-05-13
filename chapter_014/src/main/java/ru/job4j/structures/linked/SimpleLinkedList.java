@@ -266,6 +266,19 @@ public class SimpleLinkedList<E extends Comparable<? super E>> implements Simple
         return result;
     }
 
+    public void addToHead(E value) {
+        Node<E> node = new Node<>(value);
+        if (this.head == null) {
+            this.head = node;
+            this.tail = node;
+        } else {
+            Node<E> swap = this.head;
+            this.head = node;
+            this.head.next = swap;
+        }
+        this.size++;
+    }
+
     /**
      * Итератор.
      * @return итератор.
