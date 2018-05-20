@@ -143,6 +143,35 @@ public class SimpleLinkedList<E extends Comparable<? super E>> implements Simple
         return current.getElement();
     }
 
+    public void addWithSort(E value) {
+        Node<E> node = new Node<>(value);
+        Node<E> current = this.head;
+        if (this.head == null) {
+            this.head = node;
+            this.tail = node;
+        } else {
+            boolean insert = false;
+            for (int i = 0; i < this.size; i++) {
+                if (current.element.compareTo(value) >= 0) {
+                    Node<E> swap = new Node<>(current.element);
+                    current.element = value;
+                    swap.next = current.next;
+                    current.next = swap;
+                    insert = true;
+                }
+                if (insert) {
+                    break;
+                } else if (i == this.size - 1) {
+                    current.next = node;
+                }
+                current = current.next;
+            }
+        }
+        size++;
+    }
+
+
+
     /**
      * Удаление ноды из списка по значению элемента.
      * @param value элемент.
@@ -328,4 +357,5 @@ public class SimpleLinkedList<E extends Comparable<? super E>> implements Simple
     public int hashCode() {
         return Objects.hash(size, head, tail);
     }
+
 }
